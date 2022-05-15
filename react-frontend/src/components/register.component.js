@@ -41,7 +41,7 @@ export default class Register extends Component {
                     })
                 } else {
                     this.setState({
-                        possibleFoodCategories: []
+                        possibleLanguages: []
                     });
                     console.log("Error loading possible languages")
                 }

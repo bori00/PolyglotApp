@@ -23,6 +23,7 @@ public class UserFactory {
                                  PasswordEncoder passwordEncoder,
                                  LanguageRepository languageRepository) {
        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-       return userDTO.getUserType().buildUser(userDTO, languageRepository.findByName(userDTO.getNativeLanguage()));
+       return userDTO.getUserType().buildUser(userDTO,
+               languageRepository.findByName(userDTO.getNativeLanguage()).get());
     }
 }

@@ -27,4 +27,8 @@ public class CourseEnrollment {
     @JoinColumn(name = "course_id", referencedColumnName = "Id")
     // eager loading by default
     private Course course;
+
+    public CourseEnrollment(Student student) {
+        this.student = student;
+    }
 }
