@@ -3,6 +3,8 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
+import UtilService from "../services/util.service"
+import Select from 'react-select'
 
 export default class Register extends Component {
     constructor(props) {
@@ -12,14 +14,38 @@ export default class Register extends Component {
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onChangeEmailAddress = this.onChangeEmailAddress.bind(this);
         this.onChangeAccountType = this.onChangeAccountType.bind(this);
+        this.onChangeNativeLanguage = this.onChangeNativeLanguage.bind(this)
         this.state = {
             username: "",
             password: "",
             emailAddress: "",
-            admin: false,
+            teacher: false,
+            nativeLanguage: "",
             successful: false,
-            message: ""
+            message: "",
+            possibleLanguages: []
         };
+    }
+
+    getDictOfValue(v) {
+        return { value: v, label: v }
+    }
+    componentDidMount() {
+        UtilService.getAllLanguages()
+            .then(response => {
+                if (response.ok) {
+                    response.json().then(response => {
+                        this.setState({
+                            possibleLanguages: response.map(language => this.getDictOfValue(language))
+                        });
+                    })
+                } else {
+                    this.setState({
+                        possibleFoodCategories: []
+                    });
+                    console.log("Error loading possible languages")
+                }
+            })
     }
 
     onChangeUsername(e) {
@@ -43,8 +69,14 @@ export default class Register extends Component {
 
     onChangeAccountType(e) {
         this.setState({
-            admin: e.target.checked
+            teacher: e.target.checked
         });
+    }
+
+    onChangeNativeLanguage(e) {
+        this.setState({
+            nativeLanguage: e.value
+        })
     }
 
     handleRegister(e) {
@@ -61,7 +93,8 @@ export default class Register extends Component {
                 this.state.username,
                 this.state.password,
                 this.state.emailAddress,
-                this.state.admin
+                this.state.teacher,
+                this.state.nativeLanguage
             ).then(response => {
                     if (response.ok) {
                         this.setState({
@@ -132,12 +165,19 @@ export default class Register extends Component {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="accountType">Admin Account?</label>
+                                    <label htmlFor="accountType">Teacher Account?</label>
                                     <Input
                                         type="checkbox"
                                         name="accountType"
-                                        value={this.state.admin}
+                                        value={this.state.teacher}
                                         onChange={this.onChangeAccountType}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="nativeLanguage">Native Language:</label>
+                                    <Select options={this.state.possibleLanguages}
+                                            name="nativeLanguage"
+                                            onChange={this.onChangeNativeLanguage}
                                     />
                                 </div>
                                 <div className="form-group text-center">
