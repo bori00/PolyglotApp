@@ -29,10 +29,15 @@ public abstract class User {
     @Column(nullable = false, length = 100)
     private String emailAddress;
 
-    public User(String userName, String password, String emailAddress) {
+    @OneToOne
+    @JoinColumn(name = "native_language_id", nullable = false)
+    private Language nativeLanguage;
+
+    public User(String userName, String password, String emailAddress, Language nativeLanguage) {
         this.userName = userName;
         this.password = password;
         this.emailAddress = emailAddress;
+        this.nativeLanguage = nativeLanguage;
     }
 
     @Override
