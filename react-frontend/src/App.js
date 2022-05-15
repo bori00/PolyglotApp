@@ -11,6 +11,7 @@ import Register from "./components/register.component";
 import Home from "./components/home.component";
 import CreateSelfTaughtCourse from "./components/create-self-taught-course.component";
 import EnrolledCourses from "./components/enrolled-courses.component";
+import Course from "./components/course.component"
 
 class App extends Component {
   constructor(props) {
@@ -102,6 +103,7 @@ class App extends Component {
               <Route path="/create_self_taught_course"  component={CreateSelfTaughtCourse} />
               <Route path="/enrolled_courses"  component={EnrolledCourses} />
               <Route path="/teachers_home"  component={Home} />
+              <Route exact path="/course/:course_id"  component={Course} />
             </Switch>
           </div>
         </div>

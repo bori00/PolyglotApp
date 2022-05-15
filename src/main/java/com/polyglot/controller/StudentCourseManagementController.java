@@ -40,4 +40,9 @@ public class StudentCourseManagementController {
         logger.info("REQUEST - /get_all_enrolled_courses");
         return studentCourseManagementService.getAllEnrolledCourses();
     }
+
+//    @GetMapping("/get_lessons_of_enrolled_course")
+//    @PreAuthorize("hasAuthority('STUDENT')")
+//    public List<>
+
 }

@@ -6,7 +6,6 @@ import CourseManagementService from "../services/course-management.service"
 import UtilService from "../services/util.service"
 import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
-import {Link} from "react-router-dom";
 
 
 export default class EnrolledCourses extends Component {
@@ -43,9 +42,14 @@ export default class EnrolledCourses extends Component {
     render() {
 
         const courseListGroupItems = this.state.courses.map(course => {
+            const href_link = "/course/" + course.id;
             return  <ListGroupItem
                 as="li"
+                tag='a'
                 key={course.id}
+                action
+                href={href_link}
+                onClick={console.log(course.id)}
                 className="d-flex justify-content-between align-items-start"
             >
                 <div className="ms-2 me-auto">
