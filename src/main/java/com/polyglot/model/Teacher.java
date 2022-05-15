@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Ad Admin-type user.
  */
-@Entity(name = "Admin")
+@Entity(name = "teacher")
 @ToString
 @Setter
 @NoArgsConstructor
@@ -22,8 +22,8 @@ public class Teacher extends User {
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private Set<SupervisedCourse> taughtCourses;
 
-    public Teacher(String userName, String password, String emailAddress) {
-        super(userName, password, emailAddress);
+    public Teacher(String userName, String password, String emailAddress, Language nativeLanguage) {
+        super(userName, password, emailAddress, nativeLanguage);
         this.taughtCourses = new HashSet<>();
     }
 }
