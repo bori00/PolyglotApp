@@ -50,7 +50,7 @@ export default class Course extends Component {
         console.log(this.state.lesson_ids_to_title)
         const lesson_ids_to_title = this.state.lesson_ids_to_title;
         Object.keys(this.state.lesson_ids_to_title).forEach(function(id) {
-            const href_link = "/home"
+            const href_link = "/lesson/" + id
             lessonListGroupItems.push(
                 <ListGroupItem
                         as="li"

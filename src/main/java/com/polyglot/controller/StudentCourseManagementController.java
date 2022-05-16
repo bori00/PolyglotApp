@@ -39,6 +39,17 @@ public class StudentCourseManagementController {
         studentCourseManagementService.createSelfTaughtCourse(selfTaughtCourseDTO);
     }
 
+    @PostMapping(value = "/add_new_self_taught_lesson", consumes =
+            MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('STUDENT')")
+    public void addNewSelfTaughtLesson(@RequestParam("file") MultipartFile file, @RequestParam(
+            "title") String title, @RequestParam Long courseId) throws FileStorageException, AccessRestrictedToStudentsException, CourseNotFoundException {
+        logger.info("REQUEST - /add_new_self_taught_lesson for course {} and title {}", courseId,
+                title);
+
+        studentCourseManagementService.saveNewSelfTaughtLesson(courseId, title, file);
+    }
+
     @GetMapping("/get_all_enrolled_courses")
     @PreAuthorize("hasAuthority('STUDENT')")
     public List<EnrolledCourseDTO> getAllEnrolledCourses() throws AccessRestrictedToStudentsException {
@@ -50,21 +61,6 @@ public class StudentCourseManagementController {
     @PreAuthorize("hasAuthority('STUDENT')")
     public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
         return studentCourseManagementService.getEnrolledCourseData(courseId);
-    }
-
-//    @GetMapping("/get_lessons_of_enrolled_course")
-//    @PreAuthorize("hasAuthority('STUDENT')")
-//    public List<>
-
-    @PostMapping(value = "/add_new_self_taught_lesson", consumes =
-            MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('STUDENT')")
-    public void addNewSelfTaughtLesson(@RequestParam("file") MultipartFile file, @RequestParam(
-            "title") String title, @RequestParam Long courseId) throws FileStorageException, AccessRestrictedToStudentsException, CourseNotFoundException {
-        logger.info("REQUEST - /add_new_self_taught_lesson for course {} and title {}", courseId,
-                title);
-
-        studentCourseManagementService.saveNewSelfTaughtLesson(courseId, title, file);
     }
 
 }

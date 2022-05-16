@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +18,7 @@ import java.nio.file.StandardCopyOption;
  */
 @Service
 public class FileStorageService {
-    private final String LESSONS_FOLDER = "lessons";
+    private final String LESSON_PATH = "lessons/lesson%d.pdf";
 
     private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
 
@@ -35,7 +34,7 @@ public class FileStorageService {
             if (file.isEmpty()) {
                 throw new FileStorageException("Failed to store empty file.");
             }
-            Path destinationFile = Path.of(String.format("%s/lesson%d.pdf", LESSONS_FOLDER, lessonId));
+            Path destinationFile = Path.of(String.format(LESSON_PATH, lessonId));
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
                 logger.info("STORAGE UPDATE - saved content of lesson {}", lessonId);
@@ -45,5 +44,10 @@ public class FileStorageService {
             logger.error("STORAGE FAILURE - saving content of lesson {} failed", lessonId);
             throw new FileStorageException("Failed to store file.", e);
         }
+    }
+
+    public byte[] getLessonFile(Long lessonId) throws IOException {
+        Path pdfPath = Paths.get(String.format(LESSON_PATH, lessonId));
+        return Files.readAllBytes(pdfPath);
     }
 }

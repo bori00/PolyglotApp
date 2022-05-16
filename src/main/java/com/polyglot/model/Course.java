@@ -8,6 +8,7 @@ import org.checkerframework.checker.units.qual.C;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -60,5 +61,25 @@ public abstract class Course {
         CourseEnrollment enrollment = new CourseEnrollment(student);
         this.enrollments.add(enrollment);
         enrollment.setCourse(this);
+    }
+
+    public abstract List<Lesson> getLessons();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+        if (Id != null ? !Id.equals(course.Id) : course.Id != null) return false;
+        return title != null ? title.equals(course.title) : course.title == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Id != null ? Id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        return result;
     }
 }
