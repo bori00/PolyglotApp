@@ -1,21 +1,23 @@
 package com.polyglot.service.student_course_management;
 
-import com.polyglot.model.CourseEnrollment;
+import com.polyglot.model.*;
 import com.polyglot.model.DTO.EnrolledCourseDTO;
 import com.polyglot.model.DTO.SelfTaughtCourseDTO;
-import com.polyglot.model.Language;
-import com.polyglot.model.SelfTaughtCourse;
-import com.polyglot.model.Student;
 import com.polyglot.repository.CourseEnrollmentRepository;
 import com.polyglot.repository.LanguageRepository;
 import com.polyglot.repository.SelfTaughtCourseRepository;
+import com.polyglot.repository.SelfTaughtLessonRepository;
 import com.polyglot.service.authentication.AuthenticationService;
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
+import com.polyglot.service.file_storage.FileStorageService;
+import com.polyglot.service.file_storage.exceptions.FileStorageException;
+import com.polyglot.service.student_course_management.exceptions.CourseNotFoundException;
 import com.polyglot.service.student_course_management.exceptions.LanguageNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +39,13 @@ public class StudentCourseManagementService {
     private SelfTaughtCourseRepository selfTaughtCourseRepository;
 
     @Autowired
+    private SelfTaughtLessonRepository selfTaughtLessonRepository;
+
+    @Autowired
     private CourseEnrollmentRepository courseEnrollmentRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     private static final Logger logger = LoggerFactory.getLogger(StudentCourseManagementService.class);
 
@@ -99,5 +107,36 @@ public class StudentCourseManagementService {
                     }
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     *
+     * @param courseId
+     * @param title
+     * @param file
+     * @return
+     * @throws AccessRestrictedToStudentsException
+     * @throws CourseNotFoundException
+     * @throws FileStorageException
+     */
+    public SelfTaughtLesson saveNewSelfTaughtLesson(Long courseId, String title, MultipartFile file) throws AccessRestrictedToStudentsException, CourseNotFoundException, FileStorageException {
+        Student student = authenticationService.getCurrentStudent();
+
+        Optional<SelfTaughtCourse> course = selfTaughtCourseRepository.findById(courseId);
+
+        if (course.isEmpty()) {
+            logger.warn("INVALID UPDATE = attempt to add a lesson to a course {} that does not " +
+                    "exist", courseId);
+            throw new CourseNotFoundException();
+        }
+
+        SelfTaughtLesson selfTaughtLesson = new SelfTaughtLesson(title,
+                course.get().getLessons().size()+1, course.get());
+
+        SelfTaughtLesson savedLesson = selfTaughtLessonRepository.save(selfTaughtLesson);
+
+        fileStorageService.storeLesson(file, savedLesson.getId());
+
+        return savedLesson;
     }
 }

@@ -41,6 +41,8 @@ export default class Course extends Component {
         //     </ListGroupItem>
         // })
 
+        const create_lesson_link = "/create_lesson/" + this.props.match.params.course_id;
+
         return (
             <div className="col-md-12">
                 <div className="card card-container">
@@ -52,6 +54,14 @@ export default class Course extends Component {
                     <h1>{this.props.match.params.course_id}</h1>
 
                     <hr/>
+
+                    <div className="text-center">
+                        <Link to={create_lesson_link}>
+                            <button type="button" className="btn btn-primary btn-block">
+                                Add New Lesson
+                            </button>
+                        </Link>
+                    </div>
 
                     {/*<ListGroup as="ol">*/}
                     {/*    {courseListGroupItems}*/}

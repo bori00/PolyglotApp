@@ -1,7 +1,9 @@
 package com.polyglot.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,6 +12,8 @@ import java.util.Set;
 @Table(name = "supervised_course")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class SupervisedCourse extends Course {
     @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher_id", referencedColumnName = "Id")

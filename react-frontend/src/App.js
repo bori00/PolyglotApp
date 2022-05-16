@@ -12,6 +12,7 @@ import Home from "./components/home.component";
 import CreateSelfTaughtCourse from "./components/create-self-taught-course.component";
 import EnrolledCourses from "./components/enrolled-courses.component";
 import Course from "./components/course.component"
+import CreateLesson from "./components/create_lesson";
 
 class App extends Component {
   constructor(props) {
@@ -104,6 +105,7 @@ class App extends Component {
               <Route path="/enrolled_courses"  component={EnrolledCourses} />
               <Route path="/teachers_home"  component={Home} />
               <Route exact path="/course/:course_id"  component={Course} />
+              <Route exact path="/create_lesson/:course_id"  component={CreateLesson} />
             </Switch>
           </div>
         </div>

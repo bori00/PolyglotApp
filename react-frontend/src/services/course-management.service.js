@@ -1,4 +1,5 @@
 import authHeader from "./auth-header";
+import axios from 'axios';
 
 const API_URL = "http://localhost:8081/polyglot/";
 
@@ -27,6 +28,19 @@ class CourseManagementService {
                 "charset": "UTF-8"
             }, authHeader())
         })
+    }
+
+    saveNewLesson(title, file, courseId, onUploadProgress) {
+        let formData = new FormData();
+        formData.append("file", file);
+        formData.append("title", title);
+        formData.append("courseId", courseId);
+        return axios.post(API_URL + "add_new_self_taught_lesson", formData, {
+            headers: Object.assign({}, {
+                "Content-Type": "multipart/form-data",
+            }, authHeader()),
+            onUploadProgress,
+        });
     }
 }
 export default new CourseManagementService();

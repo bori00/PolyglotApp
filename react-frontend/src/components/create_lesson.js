@@ -1,50 +1,34 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
+import UtilService from "../services/util.service";
+import CourseManagementService from "../services/course-management.service";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
+import Select from "react-select";
 import CheckButton from "react-validation/build/button";
-import CourseManagementService from "../services/course-management.service"
-import UtilService from "../services/util.service"
-import Select from 'react-select'
-
+import AuthService from "../services/auth.service"
 
 export default class CreateLesson extends Component {
+    // send through props: course_id
     constructor(props) {
         super(props);
-        this.handleSaveLesson = this.handleSaveCourse.bind(this)
+        this.handleSaveLesson = this.handleSaveLesson.bind(this)
         this.onChangeTitle = this.onChangeTitle.bind(this);
-        this.onChangeLanguage = this.onChangeLanguage.bind(this);
-        this.onChangeWordTarget = this.onChangeWordTarget.bind(this)
+        this.onSelectFile = this.onSelectFile.bind(this);
         this.state = {
             title: "",
-            language: "",
-            wordTarget: 0.0,
-            possibleLanguages: [],
-            successful: false,
+            file: undefined,
+            progress: 0,
             message: "",
-            loading: false
+            fileInfos: [],
+            successful: false,
+            loading: true
         };
     }
 
-    getDictOfValue(v) {
-        return { value: v, label: v }
-    }
-
     componentDidMount() {
-        UtilService.getAllLanguages()
-            .then(response => {
-                if (response.ok) {
-                    response.json().then(response => {
-                        this.setState({
-                            possibleLanguages: response.map(language => this.getDictOfValue(language))
-                        });
-                    })
-                } else {
-                    this.setState({
-                        possibleLanguages: []
-                    });
-                    console.log("Error loading possible languages")
-                }
-            })
+        this.setState({
+            loading: false
+        })
     }
 
     onChangeTitle(e) {
@@ -53,49 +37,49 @@ export default class CreateLesson extends Component {
         });
     }
 
-    onChangeWordTarget(e) {
+    onSelectFile(e) {
         this.setState({
-            wordTarget: e.target.value
+            file: e.target.files[0],
         });
     }
 
-    onChangeLanguage(e) {
-        this.setState({
-            language: e.value
-        });
-    }
-
-    handleSaveCourse(e) {
+    handleSaveLesson(e) {
 
         e.preventDefault();
 
         this.setState({
             message: "",
             successful: false,
-            loading: false
+            progress: 0
         });
 
         this.form.validateAll();
+
         if (this.checkBtn.context._errors.length === 0) {
-            CourseManagementService.saveNewSelfTaughtCourse(this.state.title, this.state.language, this.state.wordTarget)
-                .then(response => {
-                        if (response.ok) {
-                            this.props.history.push("/home");
-                            window.location.reload();
-                        } else {
-                            response.json().then(response => response.messages.join("\n")).then(errorMsg => {
-                                this.setState({
-                                    successful: false,
-                                    message: errorMsg
-                                });
-                            })
-                        }
+            if (this.state.file.size > 1048576 * 10) { // max 10MB
+                this.setState({
+                    message: "Max file size: 10MB"
+                })
+            } else {
+                CourseManagementService.saveNewLesson(this.state.title, this.state.file, this.props.match.params.course_id, (event) => {
+                    this.setState({
+                        progress: Math.round((100 * event.loaded) / event.total),
+                    })
+                }).then((response) => {
+                    this.props.history.push("/course/" + this.props.match.params.course_id)
+                    window.location.reload();
+                }, (error) => {
+                        this.setState({
+                            successful: false,
+                            message: error.data
+                        })
                     }
-                );
+                )
+            }
         } else {
             this.setState({
                 loading: false
-            });
+            })
         }
     }
 
@@ -105,18 +89,18 @@ export default class CreateLesson extends Component {
             <div className="col-md-12">
                 <div className="card card-container">
                     <img
-                        src={require('../assets/course.png')}
+                        src={require('../assets/lesson.png')}
                         alt="food-img"
                         className="img-card scale-down"
                     />
                     <Form
-                        onSubmit={this.handleSaveCourse}
+                        onSubmit={this.handleSaveLesson}
                         ref={c => {
                             this.form = c;
                         }}
                         history={this.props.history}
                     >
-                        <h1>Create a new Course</h1>
+                        <h1>Create a new Lesson</h1>
                         <div className="form-group">
                             <label htmlFor="title">Title:</label>
                             <Input
@@ -128,26 +112,24 @@ export default class CreateLesson extends Component {
                                 validations={[required]}
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="wordTarget">Word Target:</label>
-                            <Input
-                                type="number"
-                                className="form-control"
-                                name="wordTarget"
-                                min="1"
-                                max="25"
-                                value={this.state.wordTarget}
-                                onChange={this.onChangeWordTarget}
-                                validations={[required]}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="language">Target Language:</label>
-                            <Select options={this.state.possibleLanguages}
-                                    name="language"
-                                    onChange={this.onChangeLanguage}
-                            />
-                        </div>
+                        {this.state.file && (
+                            <div className="progress">
+                                <div
+                                    className="progress-bar progress-bar-info progress-bar-striped"
+                                    role="progressbar"
+                                    aria-valuenow={this.state.progress}
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                    style={{ width: this.state.progress + "%" }}
+                                >
+                                    {this.state.progress}%
+                                </div>
+                            </div>
+                        )}
+                        <label className="btn btn-outline-secondary">
+                            <input type="file" onChange={this.onSelectFile} accept=".pdf"/>
+                        </label>
+                        <p>Max 10MB, PDF only</p>
                         <div className="form-group text-center">
                             <button
                                 className="btn btn-primary btn-block"
@@ -156,7 +138,7 @@ export default class CreateLesson extends Component {
                                 {this.state.loading && (
                                     <span className="spinner-border spinner-border-sm"/>
                                 )}
-                                <span>Save Course</span>
+                                <span>Save Lesson</span>
                             </button>
                         </div>
                         {this.state.message && (
