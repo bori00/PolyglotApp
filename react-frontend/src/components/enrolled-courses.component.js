@@ -49,7 +49,6 @@ export default class EnrolledCourses extends Component {
                 key={course.id}
                 action
                 href={href_link}
-                onClick={console.log(course.id)}
                 className="d-flex justify-content-between align-items-start"
             >
                 <div className="ms-2 me-auto">

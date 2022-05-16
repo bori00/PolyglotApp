@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,5 +45,8 @@ public class SelfTaughtCourse extends Course {
         return creator;
     }
 
-
+    @Override
+    public List<Lesson> getLessons() {
+        return new ArrayList<>(lessons);
+    }
 }

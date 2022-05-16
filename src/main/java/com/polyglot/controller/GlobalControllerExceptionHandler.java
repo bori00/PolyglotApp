@@ -4,6 +4,7 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudents
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToTeachersException;
 import com.polyglot.service.authentication.exceptions.AuthenticationRequiredException;
 import com.polyglot.service.authentication.exceptions.DuplicateUsernameException;
+import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_management.exceptions.LanguageNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -89,5 +90,13 @@ public class GlobalControllerExceptionHandler {
     ExceptionResponse handleLanguageNotFoundException(
             Exception ex) {
         return new ExceptionResponse(List.of("This language is not supported!"));
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)  // 401
+    @ExceptionHandler(InvalidCourseAccessException.class)
+    public @ResponseBody
+    ExceptionResponse handleInvalidCourseAccessException(
+            Exception ex) {
+        return new ExceptionResponse(List.of("You do not have access to this course's data"));
     }
 }

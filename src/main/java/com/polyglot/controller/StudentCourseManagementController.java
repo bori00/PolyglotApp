@@ -1,6 +1,7 @@
 package com.polyglot.controller;
 
 import com.polyglot.model.DTO.EnrolledCourseDTO;
+import com.polyglot.model.DTO.ExtendedEnrolledCourseDTO;
 import com.polyglot.model.DTO.SelfTaughtCourseDTO;
 import com.polyglot.model.SelfTaughtCourse;
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
@@ -8,6 +9,7 @@ import com.polyglot.service.file_storage.FileStorageService;
 import com.polyglot.service.file_storage.exceptions.FileStorageException;
 import com.polyglot.service.student_course_management.StudentCourseManagementService;
 import com.polyglot.service.student_course_management.exceptions.CourseNotFoundException;
+import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_management.exceptions.LanguageNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,12 @@ public class StudentCourseManagementController {
     public List<EnrolledCourseDTO> getAllEnrolledCourses() throws AccessRestrictedToStudentsException {
         logger.info("REQUEST - /get_all_enrolled_courses");
         return studentCourseManagementService.getAllEnrolledCourses();
+    }
+
+    @GetMapping("/get_enrolled_course_data")
+    @PreAuthorize("hasAuthority('STUDENT')")
+    public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
+        return studentCourseManagementService.getEnrolledCourseData(courseId);
     }
 
 //    @GetMapping("/get_lessons_of_enrolled_course")

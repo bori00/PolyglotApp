@@ -30,6 +30,23 @@ class CourseManagementService {
         })
     }
 
+    getEnrolledCourse(course_id) {
+        var url = new URL(API_URL + "get_enrolled_course_data")
+
+        var params = {"courseId": course_id}
+        params = new URLSearchParams(params);
+        url.search = new URLSearchParams(params).toString();
+
+        return fetch(url, {
+            method: 'GET',
+            headers: Object.assign({}, {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                "charset": "UTF-8"
+            }, authHeader())
+        })
+    }
+
     saveNewLesson(title, file, courseId, onUploadProgress) {
         let formData = new FormData();
         formData.append("file", file);
