@@ -20,4 +20,9 @@ public class SelfTaughtLesson extends Lesson {
         super(title, indexInsideCourse);
         this.course = course;
     }
+
+    @Override
+    public Course getCourse() {
+        return course;
+    }
 }

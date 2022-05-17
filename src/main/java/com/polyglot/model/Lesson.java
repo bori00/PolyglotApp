@@ -29,4 +29,6 @@ public abstract class Lesson {
         this.title = title;
         this.indexInsideCourse = indexInsideCourse;
     }
+
+    public abstract Course getCourse();
 }

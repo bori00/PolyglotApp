@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,8 @@ public class LessonManagementController {
     @GetMapping(value="/get_lesson_file", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> getLessonFile(@RequestParam Long lessonId) throws IOException {
         logger.info("REQUEST - /get_lesson_file for lesson {}", lessonId);
+
+        // todo: verify that user has access to the given file
 
         byte[] file = fileStorageService.getLessonFile(lessonId);
 

@@ -1,15 +1,13 @@
 package com.polyglot.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "word_to_learn")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -38,4 +36,12 @@ public class WordToLearn {
     @JoinColumn(name = "lesson_id", referencedColumnName = "Id")
     // eager loading by default
     private Lesson lesson;
+
+    public WordToLearn(String originalWord, String translation, Integer collectedPoints, CourseEnrollment courseEnrollment, Lesson lesson) {
+        this.originalWord = originalWord;
+        this.translation = translation;
+        this.collectedPoints = collectedPoints;
+        this.courseEnrollment = courseEnrollment;
+        this.lesson = lesson;
+    }
 }

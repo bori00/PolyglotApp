@@ -18,4 +18,9 @@ public class SupervisedLesson extends Lesson {
     @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     @JoinColumn(name = "course_id", referencedColumnName = "Id")
     private SupervisedCourse course;
+
+    @Override
+    public Course getCourse() {
+        return course;
+    }
 }

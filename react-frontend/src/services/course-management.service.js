@@ -59,5 +59,19 @@ class CourseManagementService {
             onUploadProgress,
         });
     }
+
+    saveUnknownWord(lesson_id, word) {
+        let body = {"lessonId": lesson_id, "word": word}
+
+        return fetch(API_URL + "add_unknown_word", {
+            method: 'POST',
+            headers: Object.assign({}, {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                "charset": "UTF-8"
+            }, authHeader()),
+            body: JSON.stringify(body)
+        })
+    }
 }
 export default new CourseManagementService();

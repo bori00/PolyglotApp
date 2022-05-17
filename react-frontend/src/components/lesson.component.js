@@ -16,14 +16,14 @@ export default class Lesson extends Component {
     // send though props: lesson_id
     constructor(props) {
         super(props);
+        this.handleSaveUnknownWord = this.handleSaveUnknownWord.bind(this)
+        this.onChangeWord = this.onChangeWord.bind(this);
         this.state = {
             loading: true,
-            lesson_file_url: undefined
-            // course_title: "",
-            // course_language: "",
-            // course_teacher: "",
-            // lesson_ids_to_title: {},
-            // lessons: []
+            lesson_file_url: undefined,
+            word: undefined,
+            message: "",
+            successful: false
         };
     }
 
@@ -37,6 +37,34 @@ export default class Lesson extends Component {
         this.setState({
             loading: false
         })
+    }
+
+    onChangeWord(e) {
+        this.setState({
+            word: e.target.value
+        })
+    }
+
+    handleSaveUnknownWord(e) {
+        e.preventDefault();
+        this.form.validateAll();
+
+        if (this.checkBtn.context._errors.length === 0) {
+            CourseManagementService.saveUnknownWord(this.props.match.params.lesson_id, this.state.word)
+                .then(response => {
+                    if (response.ok) {
+                        this.setState({
+                            message: "Saved " + this.state.word,
+                            successful: true
+                        })
+                    } else {
+                        this.setState({
+                            message: "Could not save " + this.state.word,
+                            successful: false
+                        })
+                    }
+                })
+        }
     }
 
 
@@ -60,6 +88,66 @@ export default class Lesson extends Component {
                         <Fragment>
                             <h1>Lesson</h1>
 
+                            <button className="btn btn-primary btn-block"
+                                    disabled={this.state.loading}>
+                                Practice
+                            </button>
+
+                            <hr></hr>
+
+                            <Form
+                                onSubmit={this.handleSaveUnknownWord}
+                                ref={c => {
+                                    this.form = c;
+                                }}
+                                history={this.props.history}
+                            >
+                                <h5>Add new Word to Learn</h5>
+                                <div className="form-group">
+                                    <label htmlFor="word">Unknown Word:</label>
+                                    <Input
+                                        type="text"
+                                        className="form-control"
+                                        name="word"
+                                        maxlength="50"
+                                        value={this.state.word}
+                                        onChange={this.onChangeWord}
+                                        validations={[required]}
+                                    />
+                                </div>
+                                <div className="form-group text-center">
+                                    <button
+                                        className="btn btn-secondary btn-outline"
+                                        disabled={this.state.loading}
+                                    >
+                                        {this.state.loading && (
+                                            <span className="spinner-border spinner-border-sm"/>
+                                        )}
+                                        <span>Save Word</span>
+                                    </button>
+                                </div>
+                                {this.state.message && (
+                                    <div className="form-group">
+                                        <div className={
+                                            this.state.successful
+                                                ? "alert alert-success"
+                                                : "alert alert-danger"
+                                                }
+                                             role="alert">
+                                            {this.state.message}
+                                        </div>
+                                    </div>
+                                )}
+                                <CheckButton
+                                    style={{display: "none"}}
+                                    ref={c => {
+                                        this.checkBtn = c;
+                                    }}
+                                />
+                            </Form>
+
+                            <hr></hr>
+
                             <iframe src={this.state.lesson_file_url} width="100%" height="700"/>
 
                         </Fragment>
@@ -69,3 +157,13 @@ export default class Lesson extends Component {
         );
     }
 }
+
+const required = value => {
+    if (!value) {
+        return (
+            <div className="alert alert-danger" role="alert">
+                This field is required!
+            </div>
+        );
+    }
+};

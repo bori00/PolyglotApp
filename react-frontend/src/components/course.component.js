@@ -42,8 +42,6 @@ export default class Course extends Component {
             })
     }
 
-
-
     render() {
 
         let lessonListGroupItems = [];
