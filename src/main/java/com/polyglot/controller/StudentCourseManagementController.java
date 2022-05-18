@@ -67,20 +67,4 @@ public class StudentCourseManagementController {
         logger.info("REQUEST - /get_enrolled_course_data");
         return studentCourseManagementService.getEnrolledCourseData(courseId);
     }
-
-    @PostMapping("/add_unknown_word")
-    @PreAuthorize("hasAuthority('STUDENT')")
-    public void saveUnknownWord(@RequestBody UnknownWordDTO unknownWordDTO) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
-        logger.info("REQUEST - /add_unknown_word");
-        studentCourseManagementService.saveUnknownWord(unknownWordDTO.getLessonId(), unknownWordDTO.getWord());
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Setter
-    private static class UnknownWordDTO {
-        private String word;
-        private Long lessonId;
-    }
 }

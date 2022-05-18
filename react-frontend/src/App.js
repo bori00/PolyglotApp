@@ -14,6 +14,7 @@ import EnrolledCourses from "./components/enrolled-courses.component";
 import Course from "./components/course.component"
 import CreateLesson from "./components/create_lesson";
 import Lesson from "./components/lesson.component";
+import WordQuestion from "./components/word_question.component";
 
 class App extends Component {
   constructor(props) {
@@ -108,6 +109,7 @@ class App extends Component {
               <Route exact path="/course/:course_id"  component={Course} />
               <Route exact path="/create_lesson/:course_id"  component={CreateLesson} />
               <Route exact path="/lesson/:lesson_id"  component={Lesson} />
+              <Route exact path="/word_question/:lesson_id"  component={WordQuestion} />
             </Switch>
           </div>
         </div>

@@ -70,6 +70,8 @@ export default class Lesson extends Component {
 
     render() {
 
+        const practice_lesson_link = "/word_question/" + this.props.match.params.lesson_id;
+
         return (
             <Fragment>
                 <div className="text-center">
@@ -88,10 +90,13 @@ export default class Lesson extends Component {
                         <Fragment>
                             <h1>Lesson</h1>
 
-                            <button className="btn btn-primary btn-block"
-                                    disabled={this.state.loading}>
-                                Practice
-                            </button>
+                            <div className="text-center">
+                                <Link to={practice_lesson_link}>
+                                    <button type="button" className="btn btn-primary btn-block">
+                                        Practice
+                                    </button>
+                                </Link>
+                            </div>
 
                             <hr></hr>
 
@@ -109,7 +114,7 @@ export default class Lesson extends Component {
                                         type="text"
                                         className="form-control"
                                         name="word"
-                                        maxlength="50"
+                                        maxLength="50"
                                         value={this.state.word}
                                         onChange={this.onChangeWord}
                                         validations={[required]}

@@ -4,6 +4,7 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudents
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToTeachersException;
 import com.polyglot.service.authentication.exceptions.AuthenticationRequiredException;
 import com.polyglot.service.authentication.exceptions.DuplicateUsernameException;
+import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
 import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_management.exceptions.LanguageNotFoundException;
 import lombok.AllArgsConstructor;
@@ -98,5 +99,15 @@ public class GlobalControllerExceptionHandler {
     ExceptionResponse handleInvalidCourseAccessException(
             Exception ex) {
         return new ExceptionResponse(List.of("You do not have access to this course's data"));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)  // 400
+    @ExceptionHandler(NoWordsToLearnException.class)
+    public @ResponseBody
+    ExceptionResponse handleNoWordsToLearnException(
+            Exception ex) {
+        return new ExceptionResponse(List.of("No exercise can be generated, because you have not " +
+                "marked any words as 'unknown' yet. Please add unknown words for this lesson " +
+                "before generating an exercise."));
     }
 }
