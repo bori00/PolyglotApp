@@ -1,4 +1,4 @@
-package com.polyglot.service.student_course_management;
+package com.polyglot.service.student_course_lesson_management;
 
 import com.polyglot.model.*;
 import com.polyglot.model.DTO.EnrolledCourseDTO;
@@ -7,11 +7,12 @@ import com.polyglot.model.DTO.SelfTaughtCourseDTO;
 import com.polyglot.repository.*;
 import com.polyglot.service.authentication.AuthenticationService;
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
-import com.polyglot.service.file_storage.FileStorageService;
-import com.polyglot.service.file_storage.exceptions.FileStorageException;
-import com.polyglot.service.student_course_management.exceptions.CourseNotFoundException;
-import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
-import com.polyglot.service.student_course_management.exceptions.LanguageNotFoundException;
+import com.polyglot.service.lesson_storage.LessonStorageService;
+import com.polyglot.service.lesson_storage.exceptions.FileStorageException;
+import com.polyglot.service.right_restrictions.RightVerifier;
+import com.polyglot.service.student_course_lesson_management.exceptions.CourseNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.service.student_course_lesson_management.exceptions.LanguageNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * Service class responsible for actions related to the management of self-taught courses.
  */
 @Service
-public class StudentCourseManagementService {
+public class StudentCourseLessonManagementService {
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -47,9 +48,11 @@ public class StudentCourseManagementService {
     private CourseRepository courseRepository;
 
     @Autowired
-    private FileStorageService fileStorageService;
+    private LessonStorageService lessonStorageService;
 
-    private static final Logger logger = LoggerFactory.getLogger(StudentCourseManagementService.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentCourseLessonManagementService.class);
+
+    private final RightVerifier rightVerifier = new RightVerifier();
 
 
     /**
@@ -123,27 +126,37 @@ public class StudentCourseManagementService {
      * @throws AccessRestrictedToStudentsException if the active user is not a student.
      * @throws CourseNotFoundException             if no course with the requested id exists in the database.
      * @throws FileStorageException                if saving the file fails.
+     * @throws InvalidCourseAccessException if the active user is not the owner of the course
+     * with courseId.
      */
-    public SelfTaughtLesson saveNewSelfTaughtLesson(Long courseId, String title, MultipartFile file) throws AccessRestrictedToStudentsException, CourseNotFoundException, FileStorageException {
+    public SelfTaughtLesson saveNewSelfTaughtLesson(Long courseId, String title, MultipartFile file) throws AccessRestrictedToStudentsException, CourseNotFoundException, FileStorageException, InvalidCourseAccessException {
         Student student = authenticationService.getCurrentStudent();
 
-        Optional<SelfTaughtCourse> course = selfTaughtCourseRepository.findById(courseId);
+        Optional<SelfTaughtCourse> optCourse = selfTaughtCourseRepository.findById(courseId);
 
-        if (course.isEmpty()) {
+        if (optCourse.isEmpty()) {
             logger.warn("INVALID UPDATE = attempt to add a lesson to a course {} that does not " +
                     "exist", courseId);
             throw new CourseNotFoundException();
         }
 
+        SelfTaughtCourse course = optCourse.get();
+        if (!rightVerifier.hasRightToModifyTheDataOf(student, course)) {
+            logger.warn("INVALID ACCESS = attempt add a lesson to course {} by student {}, who " +
+                            "is not the creator of the course",
+                    courseId, student);
+            throw new InvalidCourseAccessException();
+        }
+
         SelfTaughtLesson selfTaughtLesson = new SelfTaughtLesson(title,
-                course.get().getLessons().size() + 1, course.get());
+                course.getLessons().size() + 1, course);
 
         SelfTaughtLesson savedLesson = selfTaughtLessonRepository.save(selfTaughtLesson);
 
         logger.info("UPDATE - saved new lesson {} with title {}", savedLesson.getId(),
                 savedLesson.getTitle());
 
-        fileStorageService.storeLesson(file, savedLesson.getId());
+        lessonStorageService.storeLesson(file, savedLesson.getId());
 
         return savedLesson;
     }
@@ -157,12 +170,19 @@ public class StudentCourseManagementService {
      * @throws InvalidCourseAccessException        if the student does not have access to the requested
      *                                             course.
      */
-    public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
+    public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException, CourseNotFoundException {
         Student student = authenticationService.getCurrentStudent();
 
-        Course course = courseRepository.getById(courseId);
+        Optional<SelfTaughtCourse> optCourse = selfTaughtCourseRepository.findById(courseId);
 
-        if (course.getEnrollments().stream().noneMatch(courseEnrollment -> courseEnrollment.getStudent().equals(student))) {
+        if (optCourse.isEmpty()) {
+            logger.warn("INVALID UPDATE = attempt to add a lesson to a course {} that does not " +
+                    "exist", courseId);
+            throw new CourseNotFoundException();
+        }
+
+        Course course = optCourse.get();
+        if (!rightVerifier.hasAccessToTheDataOf(student, course)) {
             logger.warn("INVALID ACCESS = attempt to access data of course {} by student {}, who " +
                             "is not enrolled",
                     courseId, student);

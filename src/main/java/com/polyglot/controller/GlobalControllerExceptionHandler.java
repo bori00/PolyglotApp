@@ -5,8 +5,8 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToTeachers
 import com.polyglot.service.authentication.exceptions.AuthenticationRequiredException;
 import com.polyglot.service.authentication.exceptions.DuplicateUsernameException;
 import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
-import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
-import com.polyglot.service.student_course_management.exceptions.LanguageNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.service.student_course_lesson_management.exceptions.LanguageNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

@@ -11,7 +11,8 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudents
 import com.polyglot.service.lesson_practice.exceptions.LessonNotFoundException;
 import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
 import com.polyglot.service.lesson_practice.exceptions.WordToLearnNotFoundException;
-import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.service.right_restrictions.RightVerifier;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.translations.TranslatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +30,6 @@ import java.util.Random;
 @Service
 public class LessonPracticeService {
 
-    /**
-     * The value of a good answer.
-     */
-    public static final int GOOD_ANSWER_POINTS = 1;
-    /**
-     * The penalty for a wrong answer.
-     */
-    public static final int BAD_ANSWER_POINTS = -2;
-
     @Autowired
     private AuthenticationService authenticationService;
 
@@ -52,6 +44,10 @@ public class LessonPracticeService {
 
     @Autowired
     private LessonRepository lessonRepository;
+
+    private final RightVerifier rightVerifier = new RightVerifier();
+
+    private final WordPointCalculator wordPointCalculator = new WordPointCalculator();
 
     private static final Logger logger = LoggerFactory.getLogger(LessonPracticeService.class);
 
@@ -79,14 +75,17 @@ public class LessonPracticeService {
             throw new LessonNotFoundException();
         }
         Course course = lesson.get().getCourse();
-        Optional<CourseEnrollment> courseEnrollment =
-                courseEnrollmentRepository.findByCourseAndStudent(course, student);
-        if (courseEnrollment.isEmpty()) {
-            logger.warn("INVALID REQUEST - user {} does not have access to the course of lesson {}",
-                    student.getUserName(),
-                    lessonId);
+
+        if (!rightVerifier.hasAccessToTheDataOf(student, course)) {
+            logger.warn("INVALID ACCESS = attempt to get question of lesson {} by student {}, " +
+                            "who is not enrolled in the lesson's course",
+                    lessonId, student);
             throw new InvalidCourseAccessException();
         }
+
+        Optional<CourseEnrollment> courseEnrollment =
+                courseEnrollmentRepository.findByCourseAndStudent(course, student);
+        // guuaranteed to be present due to previous check
 
         // find the unknown words
         List<WordToLearn> wordsToLearn = wordToLearnRepository.findByLessonAndCourseEnrollmentAndCollectedPointsLessThan(
@@ -143,7 +142,7 @@ public class LessonPracticeService {
      */
     public WordLearningExerciseEvaluationDTO answerWordQuestion(Long wordToLearnId,
                                                                 String submittedTranslation,
-                                                                boolean foreignToNative) throws AccessRestrictedToStudentsException, WordToLearnNotFoundException {
+                                                                boolean foreignToNative) throws AccessRestrictedToStudentsException, WordToLearnNotFoundException, InvalidCourseAccessException {
         Student student = authenticationService.getCurrentStudent();
 
         Optional<WordToLearn> optWordToLearn = wordToLearnRepository.findById(wordToLearnId);
@@ -151,6 +150,13 @@ public class LessonPracticeService {
         if (optWordToLearn.isEmpty()) {
             logger.warn("INVALID REQUEST - WordToLearn with {} not found", wordToLearnId);
             throw new WordToLearnNotFoundException();
+        }
+
+        if (!rightVerifier.hasRightToModifyTheDataOf(student, optWordToLearn.get().getLesson())) {
+            logger.warn("INVALID ACCESS = attempt to answer question of lesson {} by student {}, " +
+                            "who is not enrolled in the lesson's course",
+                    optWordToLearn.get().getLesson().getId(), student);
+            throw new InvalidCourseAccessException();
         }
 
         WordToLearn wordToLearn = optWordToLearn.get();
@@ -170,11 +176,7 @@ public class LessonPracticeService {
         boolean isCorrect = translatorService.isCorrectTranslation(word, submittedTranslation,
                 sourceLanguage, targetLanguage);
 
-        if (isCorrect) {
-            wordToLearn.setCollectedPoints(wordToLearn.getCollectedPoints() + GOOD_ANSWER_POINTS);
-        } else {
-            wordToLearn.setCollectedPoints(wordToLearn.getCollectedPoints() + BAD_ANSWER_POINTS);
-        }
+        wordToLearn.setCollectedPoints(wordPointCalculator.getNewPoints(wordToLearn.getCollectedPoints(), isCorrect));
 
         wordToLearnRepository.save(wordToLearn);
 

@@ -1,4 +1,4 @@
-package com.polyglot.service.file_storage.exceptions;
+package com.polyglot.service.lesson_storage.exceptions;
 
 /**
  * Exception thrown when storing a file fails.

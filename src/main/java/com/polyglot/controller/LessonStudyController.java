@@ -2,7 +2,7 @@ package com.polyglot.controller;
 
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
 import com.polyglot.service.lesson_study.LessonStudyService;
-import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,6 @@ public class LessonStudyController {
     @PreAuthorize("hasAuthority('STUDENT')")
     public void saveUnknownWord(@RequestBody UnknownWordDTO unknownWordDTO) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
         logger.info("REQUEST - /add_unknown_word");
-        // todo: verify that the word is unique for the given lesson and course enrollment
         lessonStudyService.saveUnknownWord(unknownWordDTO.getLessonId(), unknownWordDTO.getWord());
     }
 

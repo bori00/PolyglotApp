@@ -1,6 +1,8 @@
 package com.polyglot.controller;
 
-import com.polyglot.service.file_storage.FileStorageService;
+import com.polyglot.service.lesson_management.LessonManagementService;
+import com.polyglot.service.lesson_practice.exceptions.LessonNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +19,15 @@ import java.io.IOException;
 public class LessonManagementController {
 
     @Autowired
-    private FileStorageService fileStorageService;
+    private LessonManagementService lessonManagementService;
 
     private static final Logger logger = LoggerFactory.getLogger(LessonManagementController.class);
 
     @GetMapping(value = "/get_lesson_file", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> getLessonFile(@RequestParam Long lessonId) throws IOException {
+    public ResponseEntity<byte[]> getLessonFile(@RequestParam Long lessonId) throws IOException, LessonNotFoundException, InvalidCourseAccessException {
         logger.info("REQUEST - /get_lesson_file for lesson {}", lessonId);
 
-        // todo: verify that user has access to the given file
-
-        byte[] file = fileStorageService.getLessonFile(lessonId);
+        byte[] file = lessonManagementService.getLessonsFile(lessonId);
 
         logger.info("EVENT - found pdf for lesson {}", lessonId);
 

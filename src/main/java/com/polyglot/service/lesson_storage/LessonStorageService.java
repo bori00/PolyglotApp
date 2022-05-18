@@ -1,6 +1,6 @@
-package com.polyglot.service.file_storage;
+package com.polyglot.service.lesson_storage;
 
-import com.polyglot.service.file_storage.exceptions.FileStorageException;
+import com.polyglot.service.lesson_storage.exceptions.FileStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import java.nio.file.StandardCopyOption;
  * Service responsible for storing files for different purposes.
  */
 @Service
-public class FileStorageService {
-    private final String LESSON_PATH = "lessons/lesson%d.pdf";
+public class LessonStorageService {
+    private static final String LESSON_PATH = "lessons/lesson%d.pdf";
 
-    private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LessonStorageService.class);
 
     /**
      * Saves a file in the folder of the lessons.
@@ -35,7 +35,7 @@ public class FileStorageService {
             if (file.isEmpty()) {
                 throw new FileStorageException("Failed to store empty file.");
             }
-            Path destinationFile = Path.of(String.format(LESSON_PATH, lessonId));
+            Path destinationFile = Path.of(getLessonFilePath(lessonId));
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
                 logger.info("STORAGE UPDATE - saved content of lesson {}", lessonId);
@@ -47,7 +47,11 @@ public class FileStorageService {
     }
 
     public byte[] getLessonFile(Long lessonId) throws IOException {
-        Path pdfPath = Paths.get(String.format(LESSON_PATH, lessonId));
+        Path pdfPath = Paths.get(getLessonFilePath(lessonId));
         return Files.readAllBytes(pdfPath);
+    }
+
+    private String getLessonFilePath(Long lessonId) {
+        return String.format(LESSON_PATH, lessonId);
     }
 }

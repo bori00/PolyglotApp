@@ -8,7 +8,7 @@ import com.polyglot.service.lesson_practice.LessonPracticeService;
 import com.polyglot.service.lesson_practice.exceptions.LessonNotFoundException;
 import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
 import com.polyglot.service.lesson_practice.exceptions.WordToLearnNotFoundException;
-import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class LessonPracticeController {
 
     @PostMapping(value = "/answer_word_question")
     @PreAuthorize("hasAuthority('STUDENT')")
-    public WordLearningExerciseEvaluationDTO answerWordQuestion(@RequestBody WordQuestionAnswerDTO answerDTO) throws AccessRestrictedToStudentsException, WordToLearnNotFoundException {
+    public WordLearningExerciseEvaluationDTO answerWordQuestion(@RequestBody WordQuestionAnswerDTO answerDTO) throws AccessRestrictedToStudentsException, WordToLearnNotFoundException, InvalidCourseAccessException {
         logger.info("REQUEST - /answer_word_question for wordToLearn {}", answerDTO.getWordToLearnId());
 
         return lessonPracticeService.answerWordQuestion(

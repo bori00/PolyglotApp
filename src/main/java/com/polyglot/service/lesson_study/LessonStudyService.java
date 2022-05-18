@@ -9,12 +9,15 @@ import com.polyglot.repository.LessonRepository;
 import com.polyglot.repository.WordToLearnRepository;
 import com.polyglot.service.authentication.AuthenticationService;
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
-import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.service.right_restrictions.RightVerifier;
+import com.polyglot.service.student_course_lesson_management.exceptions.CourseNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.translations.TranslatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -41,6 +44,8 @@ public class LessonStudyService {
 
     private static final Logger logger = LoggerFactory.getLogger(LessonStudyService.class);
 
+    private final RightVerifier rightVerifier = new RightVerifier();
+
     /**
      * Saves a new word to learn for the active user, to the given lesson, with the translation
      * to the users native language.
@@ -56,12 +61,15 @@ public class LessonStudyService {
 
         Lesson lesson = lessonRepository.getById(lessonId);
 
-        Optional<CourseEnrollment> courseEnrollment =
-                courseEnrollmentRepository.findByCourseAndStudent(lesson.getCourse(), student);
-
-        if (courseEnrollment.isEmpty()) {
+        if (!rightVerifier.hasRightToModifyTheDataOf(student, lesson)) {
+            logger.warn("INVALID UPDATE = attempt to add an unknown word to a lesson {} that the " +
+                    "user {} doesn't have access to", student, lessonId);
             throw new InvalidCourseAccessException();
         }
+
+        Optional<CourseEnrollment> courseEnrollment =
+                courseEnrollmentRepository.findByCourseAndStudent(lesson.getCourse(), student);
+        // guaranteed to be present due to the previous check
 
         String translatedWord = translatorService.getTranslation(word,
                 lesson.getCourse().getLanguage(), student.getNativeLanguage());

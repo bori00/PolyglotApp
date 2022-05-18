@@ -1,4 +1,4 @@
-package com.polyglot.service.student_course_management.exceptions;
+package com.polyglot.service.student_course_lesson_management.exceptions;
 
 /**
  * Exception thrown when a user attempts to access the data of a course to which they do not have
