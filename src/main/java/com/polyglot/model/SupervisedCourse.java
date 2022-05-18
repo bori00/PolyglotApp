@@ -39,4 +39,9 @@ public class SupervisedCourse extends Course {
     public List<Lesson> getLessons() {
         return new ArrayList<>(lessons);
     }
+
+    public SupervisedCourse(String title, Integer minPointsPerWord, Language language, Teacher teacher) {
+        super(title, minPointsPerWord, language);
+        this.teacher = teacher;
+    }
 }

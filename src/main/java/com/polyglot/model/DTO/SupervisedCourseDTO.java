@@ -8,14 +8,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
- * DTO used for client-server communication, representing a self-taught course.
+ * DTO used for client-server communication, representing a supervised course.
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @ToString
-public class SelfTaughtCourseDTO {
+public class SupervisedCourseDTO {
     @NotBlank(message = "The title cannot be blank.")
     @Size(min = 3, max = 30, message = "The title should have a length between 3 and " +
             "30")
