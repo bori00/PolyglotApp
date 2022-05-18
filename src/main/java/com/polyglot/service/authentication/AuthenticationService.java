@@ -39,6 +39,7 @@ public class AuthenticationService {
 
     /**
      * Returns the currently logged in user.
+     *
      * @return the currently logged in user.
      * @throws AuthenticationRequiredException if no authenticated user exists.
      */
@@ -55,9 +56,10 @@ public class AuthenticationService {
 
     /**
      * Returns the currently logged in Teacher.
+     *
      * @return the currently logged in Teacher.
      * @throws AccessRestrictedToTeachersException, if no authenticated user exists, or the
-     * logged-in user is not an Teacher.
+     *                                              logged-in user is not an Teacher.
      */
     public Teacher getCurrentTeacher() throws AccessRestrictedToTeachersException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -72,9 +74,10 @@ public class AuthenticationService {
 
     /**
      * Returns the currently logged in Student.
+     *
      * @return the currently logged in Student.
      * @throws AccessRestrictedToStudentsException, if no authenticated user exists, or the
-     * logged-in user is not a Student.
+     *                                              logged-in user is not a Student.
      */
     public Student getCurrentStudent() throws AccessRestrictedToStudentsException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

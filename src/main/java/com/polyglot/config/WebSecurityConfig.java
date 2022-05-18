@@ -26,8 +26,8 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
-         prePostEnabled = true
-        )
+        prePostEnabled = true
+)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;

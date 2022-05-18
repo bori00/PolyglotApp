@@ -12,7 +12,7 @@ export default class Home extends Component {
         return (
             <div className="container">
                 <header className="jumbotron">
-                    <h3>"People who love to eat are always the best people."</h3>
+                    <h3>"To learn a language is to have one more window from which to look at the world."</h3>
                 </header>
             </div>
         );

@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name="language")
+@Table(name = "language")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,4 +20,31 @@ public class Language {
 
     @Column(nullable = false, unique = true, length = 50)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 10)
+    private String API_ID;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Language language = (Language) o;
+
+        return API_ID != null ? API_ID.equals(language.API_ID) : language.API_ID == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return API_ID != null ? API_ID.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Language{" +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
+                ", API_ID='" + API_ID + '\'' +
+                '}';
+    }
 }

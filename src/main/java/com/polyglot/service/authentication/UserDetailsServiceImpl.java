@@ -31,6 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     /**
      * Finds a user by their username and returns the corresonding UserDetails for Spring Security.
+     *
      * @param username is the name of the user to be found.
      * @return the UserDetails of the user with the given name.
      * @throws UsernameNotFoundException if no user with the given username exists.
@@ -71,43 +72,57 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             this.authorities = List.of(new SimpleGrantedAuthority(Authorities.STUDENT.toString()));
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return authorities;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getPassword() {
             return user.getPassword();
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String getUsername() {
             return user.getUserName();
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isAccountNonExpired() {
             return true;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isAccountNonLocked() {
             return true;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isCredentialsNonExpired() {
             return true;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isEnabled() {
             return true;

@@ -36,6 +36,7 @@ public class LoginRegistrationService {
 
     /**
      * Registers a user with the data specified in the userDTO.
+     *
      * @param userDTO holds the registration data.
      * @throws DuplicateUsernameException if the requested username is already taken.
      */

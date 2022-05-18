@@ -9,6 +9,12 @@ import AuthService from "./services/auth.service";
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
+import CreateSelfTaughtCourse from "./components/create-self-taught-course.component";
+import EnrolledCourses from "./components/enrolled-courses.component";
+import Course from "./components/course.component"
+import CreateLesson from "./components/create_lesson";
+import Lesson from "./components/lesson.component";
+import WordQuestion from "./components/word_question.component";
 
 class App extends Component {
   constructor(props) {
@@ -48,15 +54,22 @@ class App extends Component {
             <div className="navbar-nav mr-auto">
               {showStudentBoard && (
                   <li className="nav-item">
-                    <Link to={"/students_home"} className="nav-link">
-                      Menu
+                    <Link to={"/enrolled_courses"} className="nav-link">
+                      Enrolled Courses
+                    </Link>
+                  </li>
+              )}
+              {showStudentBoard && (
+                  <li className="nav-item">
+                    <Link to={"/create_self_taught_course"} className="nav-link">
+                      Create new Course
                     </Link>
                   </li>
               )}
               {showTeacherBoard && (
                   <li className="nav-item">
                     <Link to={"/teachers_home"} className="nav-link">
-                      Orders
+                      Home
                     </Link>
                   </li>
               )}
@@ -90,7 +103,13 @@ class App extends Component {
               <Route exact path="/login"  component={Login} />
               <Route exact path="/register"  component={Register} />
               <Route path="/students_home"  component={Home} />
+              <Route path="/create_self_taught_course"  component={CreateSelfTaughtCourse} />
+              <Route path="/enrolled_courses"  component={EnrolledCourses} />
               <Route path="/teachers_home"  component={Home} />
+              <Route exact path="/course/:course_id"  component={Course} />
+              <Route exact path="/create_lesson/:course_id"  component={CreateLesson} />
+              <Route exact path="/lesson/:lesson_id"  component={Lesson} />
+              <Route exact path="/word_question/:lesson_id"  component={WordQuestion} />
             </Switch>
           </div>
         </div>

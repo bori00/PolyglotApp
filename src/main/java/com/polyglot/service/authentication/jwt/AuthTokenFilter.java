@@ -31,11 +31,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
      * Filters a request based on authentication status, relying on the jwt token sent with the
      * request. If the jwt token is valid, then the UserDetails of the current user are set in
      * the SecurityContext.
-     * @param request is the request to be filtered.
-     * @param response is the response to the request.
+     *
+     * @param request     is the request to be filtered.
+     * @param response    is the response to the request.
      * @param filterChain is the chain of filters through which the request is going.
      * @throws ServletException if the execution of filterChain throws a ServletException.
-     * @throws IOException if the execution of filterChain throws an IOException.
+     * @throws IOException      if the execution of filterChain throws an IOException.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -52,7 +53,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
-            throw(e);
+            throw (e);
         }
         filterChain.doFilter(request, response);
     }
@@ -60,7 +61,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7, headerAuth.length());
+            return headerAuth.substring(7);
         }
         return null;
     }

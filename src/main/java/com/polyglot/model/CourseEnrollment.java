@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name="course_enrollment")
+@Table(name = "course_enrollment")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -27,4 +27,8 @@ public class CourseEnrollment {
     @JoinColumn(name = "course_id", referencedColumnName = "Id")
     // eager loading by default
     private Course course;
+
+    public CourseEnrollment(Student student) {
+        this.student = student;
+    }
 }

@@ -25,8 +25,10 @@ public abstract class Lesson {
     @Column(nullable = false)
     private Integer indexInsideCourse;
 
-    @Column(nullable = false)
-    // to be replaced with the right identifier of the text linked to the lesson
-    // depends on how the texts are stored
-    private Integer textId;
+    public Lesson(String title, Integer indexInsideCourse) {
+        this.title = title;
+        this.indexInsideCourse = indexInsideCourse;
+    }
+
+    public abstract Course getCourse();
 }
