@@ -1,7 +1,6 @@
 package com.polyglot.model.DTO;
 
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Getter
 @AllArgsConstructor

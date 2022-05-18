@@ -28,6 +28,7 @@ public class JwtUtils {
     /**
      * Generates a JWT token for the given user based on their name, the currant date and with an
      * expiration date.
+     *
      * @param authentication specifies the user for whom the token is generated.
      * @return a string representing a JWT token.
      */
@@ -43,6 +44,7 @@ public class JwtUtils {
 
     /**
      * Parses a JWT token and returns the username from it.
+     *
      * @param token is the string token to be parsed.
      * @return the username extracted from the token.
      */
@@ -52,6 +54,7 @@ public class JwtUtils {
 
     /**
      * Validates a JWT token.
+     *
      * @param authToken is the token to validate.
      * @return true if the token is valid, false otherwise.
      */

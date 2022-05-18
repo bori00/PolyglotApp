@@ -2,8 +2,6 @@ package com.polyglot;
 
 
 import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.Translation;
-import com.google.cloud.translate.testing.RemoteTranslateHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

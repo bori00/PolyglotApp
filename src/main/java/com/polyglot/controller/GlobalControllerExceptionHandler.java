@@ -106,8 +106,7 @@ public class GlobalControllerExceptionHandler {
     public @ResponseBody
     ExceptionResponse handleNoWordsToLearnException(
             Exception ex) {
-        return new ExceptionResponse(List.of("No exercise can be generated, because you have not " +
-                "marked any words as 'unknown' yet. Please add unknown words for this lesson " +
-                "before generating an exercise."));
+        return new ExceptionResponse(List.of("No exercise can be generated, because you do not " +
+                "have any unknown words for this lesson. Good Job! :)"));
     }
 }

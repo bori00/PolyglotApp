@@ -23,7 +23,7 @@ public class LessonPracticeController {
 
     private static final Logger logger = LoggerFactory.getLogger(LessonPracticeController.class);
 
-    @GetMapping(value="/get_word_question")
+    @GetMapping(value = "/get_word_question")
     @PreAuthorize("hasAuthority('STUDENT')")
     public WordLearningExerciseDTO getWordQuestion(@RequestParam Long lessonId) throws InvalidCourseAccessException, AccessRestrictedToStudentsException, LessonNotFoundException, NoWordsToLearnException {
         logger.info("REQUEST - /get_word_question for lesson {}", lessonId);
@@ -31,7 +31,7 @@ public class LessonPracticeController {
         return lessonPracticeService.getWordQuestion(lessonId);
     }
 
-    @PostMapping(value="/answer_word_question")
+    @PostMapping(value = "/answer_word_question")
     @PreAuthorize("hasAuthority('STUDENT')")
     public WordLearningExerciseEvaluationDTO answerWordQuestion(@RequestBody WordQuestionAnswerDTO answerDTO) throws AccessRestrictedToStudentsException, WordToLearnNotFoundException {
         logger.info("REQUEST - /answer_word_question for wordToLearn {}", answerDTO.getWordToLearnId());

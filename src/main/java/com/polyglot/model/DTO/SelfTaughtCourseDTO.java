@@ -2,7 +2,10 @@ package com.polyglot.model.DTO;
 
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * DTO used for client-server communication, representing a elf-taught course.

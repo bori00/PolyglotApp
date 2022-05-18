@@ -1,13 +1,13 @@
 package com.polyglot.service.file_storage;
 
 import com.polyglot.service.file_storage.exceptions.FileStorageException;
-import com.polyglot.service.student_course_management.StudentCourseManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +24,8 @@ public class FileStorageService {
 
     /**
      * Saves a file in the folder of the lessons.
-     * @param file is the file to be saved.
+     *
+     * @param file     is the file to be saved.
      * @param lessonId is the id of the lesson, whose content is stored in the file. The
      *                 identifier will be part of the file's name.
      * @throws FileStorageException if saving the file fails.
@@ -39,8 +40,7 @@ public class FileStorageService {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
                 logger.info("STORAGE UPDATE - saved content of lesson {}", lessonId);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("STORAGE FAILURE - saving content of lesson {} failed", lessonId);
             throw new FileStorageException("Failed to store file.", e);
         }

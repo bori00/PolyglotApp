@@ -1,8 +1,9 @@
 package com.polyglot.service.lesson_practice.exceptions;
 
 /**
- * Exception thrown when an exercise for a lesson is requested, but there are no words yet marked
- * as unknown (i.e. "word to learn").
+ * Exception thrown when an exercise for a lesson is requested, but there are no unknown words,
+ * meaning that all the words that have been previously learnt as 'unknown' by the student, have
+ * been studied thoroughly and reached the target points through the practice exercises.
  */
 public class NoWordsToLearnException extends Exception {
 }

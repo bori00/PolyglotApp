@@ -1,8 +1,5 @@
 package com.polyglot.service.student_course_management;
 
-import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.Translation;
-import com.google.cloud.translate.testing.RemoteTranslateHelper;
 import com.polyglot.model.*;
 import com.polyglot.model.DTO.EnrolledCourseDTO;
 import com.polyglot.model.DTO.ExtendedEnrolledCourseDTO;
@@ -22,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,10 +54,11 @@ public class StudentCourseManagementService {
 
     /**
      * Creates and saves in the database a new self-taught course.
+     *
      * @param selfTaughtCourseDTO holds the data of the new course.
      * @return the saved course.
      * @throws AccessRestrictedToStudentsException if the current user is not a student.
-     * @throws LanguageNotFoundException if the requested language is not supported.
+     * @throws LanguageNotFoundException           if the requested language is not supported.
      */
     public SelfTaughtCourse createSelfTaughtCourse(SelfTaughtCourseDTO selfTaughtCourseDTO) throws AccessRestrictedToStudentsException, LanguageNotFoundException {
         Student student = authenticationService.getCurrentStudent();
@@ -93,6 +90,7 @@ public class StudentCourseManagementService {
     /**
      * Finds and returns all courses, self-taught or supervised, in which the current student is
      * enrolled.
+     *
      * @return the courses in which the current student is enrolled.
      * @throws AccessRestrictedToStudentsException if the active user is not a student.
      */
@@ -117,13 +115,14 @@ public class StudentCourseManagementService {
 
     /**
      * Saves a new self-taught lesson.
+     *
      * @param courseId is the identifier of the course to which the lesson belongs.
-     * @param title is the title of the new lesson.
-     * @param file is the file with the lesson's content.
+     * @param title    is the title of the new lesson.
+     * @param file     is the file with the lesson's content.
      * @return the newly saved lesson.
      * @throws AccessRestrictedToStudentsException if the active user is not a student.
-     * @throws CourseNotFoundException if no course with the requested id exists in the database.
-     * @throws FileStorageException if saving the file fails.
+     * @throws CourseNotFoundException             if no course with the requested id exists in the database.
+     * @throws FileStorageException                if saving the file fails.
      */
     public SelfTaughtLesson saveNewSelfTaughtLesson(Long courseId, String title, MultipartFile file) throws AccessRestrictedToStudentsException, CourseNotFoundException, FileStorageException {
         Student student = authenticationService.getCurrentStudent();
@@ -137,7 +136,7 @@ public class StudentCourseManagementService {
         }
 
         SelfTaughtLesson selfTaughtLesson = new SelfTaughtLesson(title,
-                course.get().getLessons().size()+1, course.get());
+                course.get().getLessons().size() + 1, course.get());
 
         SelfTaughtLesson savedLesson = selfTaughtLessonRepository.save(selfTaughtLesson);
 
@@ -151,17 +150,19 @@ public class StudentCourseManagementService {
 
     /**
      * Returns the data of a course in which the active user, a student, is enrolled.
+     *
      * @param courseId is the id of the course whose data is requested and returned.
      * @return the data of the requested course.
      * @throws AccessRestrictedToStudentsException if the active user is not a student.
-     * @throws InvalidCourseAccessException
+     * @throws InvalidCourseAccessException        if the student does not have access to the requested
+     *                                             course.
      */
     public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
         Student student = authenticationService.getCurrentStudent();
 
         Course course = courseRepository.getById(courseId);
 
-        if (!course.getEnrollments().stream().anyMatch(courseEnrollment -> courseEnrollment.getStudent().equals(student))) {
+        if (course.getEnrollments().stream().noneMatch(courseEnrollment -> courseEnrollment.getStudent().equals(student))) {
             logger.warn("INVALID ACCESS = attempt to access data of course {} by student {}, who " +
                             "is not enrolled",
                     courseId, student);

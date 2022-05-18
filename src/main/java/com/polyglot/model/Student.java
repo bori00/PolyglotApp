@@ -5,7 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 /**
@@ -23,8 +26,8 @@ public class Student extends User {
     private Set<CourseEnrollment> enrollments;
 
     /**
-     * @param userName is the name (identifier) of the customer.
-     * @param password is the password of the user used for authentication.
+     * @param userName     is the name (identifier) of the customer.
+     * @param password     is the password of the user used for authentication.
      * @param emailAddress is the email address of the user.
      */
     public Student(String userName, String password, String emailAddress, Language nativeLanguage) {

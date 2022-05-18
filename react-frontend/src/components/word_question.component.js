@@ -28,6 +28,7 @@ export default class WordQuestion extends Component {
             evaluated: false,
             officialTranslation: "",
             accepted: undefined,
+            errorMessage: ""
         };
     }
 
@@ -52,10 +53,16 @@ export default class WordQuestion extends Component {
                             evaluated: false,
                             officialTranslation: "",
                             accepted: undefined,
+                            errorMessage: "",
                         });
                     })
                 } else {
-                    // todo: handle no words case
+                    response.json().then(response => response.messages.join("\n")).then(errorMsg => {
+                        this.setState({
+                            errorMessage: errorMsg,
+                        });
+                        console.log("Error loading exercise")
+                    })
                 }
 
             })
@@ -119,6 +126,7 @@ export default class WordQuestion extends Component {
                     {this.state.loading && (
                         <Fragment>
                             <p>Loading...</p>
+                            <p style={{color: "red"}}>{this.state.errorMessage}</p>
                         </Fragment>
                     )}
                     {!this.state.loading && (
@@ -247,7 +255,7 @@ export default class WordQuestion extends Component {
             </div>
         );
     }
-}
+};
 
 const required = value => {
     if (!value) {

@@ -18,10 +18,11 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     /**
      * Method invoked whenever an authenticated user tries to acces a secured HTTP resource
      * available for authenticated users only.
-     * @param request is the request sent by the user.
-     * @param response is the answer to te request.
+     *
+     * @param request       is the request sent by the user.
+     * @param response      is the answer to te request.
      * @param authException is the authentication exception that prevented the fulfillment of the
-     *                     request.
+     *                      request.
      * @throws IOException when sending the error through the response fails.
      */
     @Override

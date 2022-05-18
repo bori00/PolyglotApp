@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollment, Long> {
 
-    public List<CourseEnrollment> findByStudent(Student student);
+    List<CourseEnrollment> findByStudent(Student student);
 
     Optional<CourseEnrollment> findByCourseAndStudent(Course course, Student student);
 }
