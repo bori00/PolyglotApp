@@ -11,6 +11,7 @@ import com.polyglot.service.authentication.AuthenticationService;
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
 import com.polyglot.service.student_course_management.StudentCourseManagementService;
 import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.translations.TranslatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class LessonStudyService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private TranslatorService translatorService;
 
     @Autowired
     private CourseEnrollmentRepository courseEnrollmentRepository;
@@ -60,18 +64,8 @@ public class LessonStudyService {
             throw new InvalidCourseAccessException();
         }
 
-        RemoteTranslateHelper helper = RemoteTranslateHelper.create();
-        Translate translate = helper.getOptions().getService();
-
-        String translatedWord = word;
-        if (!lesson.getCourse().getLanguage().equals(student.getNativeLanguage())) {
-            translatedWord = translate.translate(word,
-                    Translate.TranslateOption.sourceLanguage(lesson.getCourse().getLanguage().getAPI_ID()),
-                    Translate.TranslateOption.targetLanguage(student.getNativeLanguage().getAPI_ID())).getTranslatedText().toLowerCase(Locale.ROOT);
-        }
-
-        logger.info("Translated {} in {} to {} in {}", word, lesson.getCourse().getLanguage(),
-                translatedWord, student.getNativeLanguage());
+        String translatedWord = translatorService.getTranslation(word,
+                lesson.getCourse().getLanguage(), student.getNativeLanguage());
 
         WordToLearn wordToLearn = new WordToLearn(word, translatedWord, 0, courseEnrollment.get()
                 , lesson);

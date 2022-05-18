@@ -14,6 +14,7 @@ import com.polyglot.service.lesson_practice.exceptions.LessonNotFoundException;
 import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
 import com.polyglot.service.lesson_practice.exceptions.WordToLearnNotFoundException;
 import com.polyglot.service.student_course_management.exceptions.InvalidCourseAccessException;
+import com.polyglot.translations.TranslatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class LessonPracticeService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private TranslatorService translatorService;
 
     @Autowired
     private WordToLearnRepository wordToLearnRepository;
@@ -107,8 +111,20 @@ public class LessonPracticeService {
 
         WordToLearn wordToLearn = optWordToLearn.get();
 
-        boolean isCorrect = isCorrectAnswer(wordToLearn, submittedTranslation,
-                student.getNativeLanguage(), foreignToNative);
+        Language sourceLanguage = foreignToNative ?
+                wordToLearn.getLesson().getCourse().getLanguage() :
+                student.getNativeLanguage();
+        Language targetLanguage = foreignToNative ?
+                student.getNativeLanguage() :
+                wordToLearn.getLesson().getCourse().getLanguage();
+
+        String word = foreignToNative ? wordToLearn.getOriginalWord() :
+                wordToLearn.getTranslation();
+        String officialTranslation = foreignToNative ? wordToLearn.getTranslation() :
+                wordToLearn.getOriginalWord();
+
+        boolean isCorrect = translatorService.isCorrectTranslation(word, submittedTranslation,
+                sourceLanguage, targetLanguage);
 
         if (isCorrect) {
             wordToLearn.setCollectedPoints(wordToLearn.getCollectedPoints() + GOOD_ANSWER_POINTS);
@@ -118,17 +134,6 @@ public class LessonPracticeService {
 
         wordToLearnRepository.save(wordToLearn);
 
-        Language sourceLanguage = foreignToNative ?
-                wordToLearn.getLesson().getCourse().getLanguage() :
-                student.getNativeLanguage();
-        Language targetLanguage = !foreignToNative ?
-                wordToLearn.getLesson().getCourse().getLanguage() :
-                student.getNativeLanguage();
-
-        String word = foreignToNative ? wordToLearn.getOriginalWord() :
-                wordToLearn.getTranslation();
-        String officialTranslation = foreignToNative ? wordToLearn.getTranslation() :
-                wordToLearn.getOriginalWord();
 
         return new WordLearningExerciseEvaluationDTO(
                 wordToLearnId,
@@ -142,43 +147,6 @@ public class LessonPracticeService {
                 sourceLanguage.getName(),
                 targetLanguage.getName(),
                 foreignToNative);
-    }
-
-    private boolean isCorrectAnswer(WordToLearn wordToLearn, String submittedTranslation,
-                                    Language nativeLanguage, boolean foreignToNative) {
-        String sourceWord;
-        String translation;
-
-        Language sourceLanguage;
-        Language targetLanguage;
-
-        if (foreignToNative) {
-           sourceWord = wordToLearn.getOriginalWord();
-           translation = wordToLearn.getTranslation();
-           sourceLanguage = wordToLearn.getLesson().getCourse().getLanguage();
-           targetLanguage = nativeLanguage;
-        } else {
-            sourceWord = wordToLearn.getTranslation();
-            translation = wordToLearn.getOriginalWord();
-            sourceLanguage = nativeLanguage;
-            targetLanguage = wordToLearn.getLesson().getCourse().getLanguage();
-        }
-
-        if (submittedTranslation.equals(translation)) {
-            return true;
-        }
-
-        String backTranslatedWord = submittedTranslation;
-        if (!wordToLearn.getLesson().getCourse().getLanguage().equals(nativeLanguage)) {
-            RemoteTranslateHelper helper = RemoteTranslateHelper.create();
-            Translate translate = helper.getOptions().getService();
-
-            backTranslatedWord = translate.translate(submittedTranslation,
-                    Translate.TranslateOption.sourceLanguage(targetLanguage.getAPI_ID()),
-                    Translate.TranslateOption.targetLanguage(sourceLanguage.getAPI_ID())).getTranslatedText().toLowerCase(Locale.ROOT);
-        }
-
-        return (backTranslatedWord.equals(sourceWord.toLowerCase(Locale.ROOT)));
     }
 
     private boolean randomTranslateForwards() {
