@@ -15,4 +15,5 @@ public class ExtendedTaughtCourseDTO {
     public String language;
     public int nrOfStudents;
     private Map<Long, String> lessonIdsToTitle;
+    public int joiningCode;
 }

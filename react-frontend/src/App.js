@@ -12,11 +12,14 @@ import Register from "./components/register.component";
 import Home from "./components/home.component";
 import CreateSelfTaughtCourse from "./components/create-self-taught-course.component";
 import EnrolledCourses from "./components/enrolled-courses.component";
-import Course from "./components/course.component"
+import StudiedCourse from "./components/studied-course.component"
 import CreateLesson from "./components/create_lesson";
-import Lesson from "./components/lesson.component";
+import StudiedLesson from "./components/studied-lesson.component";
 import WordQuestion from "./components/word_question.component";
 import CreateSupervisedCourse from "./components/create-supervised-course.component";
+import SupervisedCourses from "./components/supervised-courses.component"
+import SupervisedCourse from "./components/supervised-course.component";
+import SupervisedLesson from "./components/supervised-lesson.component";
 
 class App extends Component {
   constructor(props) {
@@ -77,7 +80,7 @@ class App extends Component {
               )}
               {showTeacherBoard && (
                   <li className="nav-item">
-                    <Link to={"/teachers_home"} className="nav-link">
+                    <Link to={"/supervised_courses"} className="nav-link">
                       Supervised Courses
                     </Link>
                   </li>
@@ -122,11 +125,14 @@ class App extends Component {
               <Route path="/create_self_taught_course"  component={CreateSelfTaughtCourse} />
               <Route path="/enrolled_courses"  component={EnrolledCourses} />
               <Route path="/teachers_home"  component={Home} />
-              <Route exact path="/course/:course_id"  component={Course} />
-              <Route exact path="/create_lesson/:course_id"  component={CreateLesson} />
-              <Route exact path="/lesson/:lesson_id"  component={Lesson} />
+              <Route exact path="/course/:course_id"  component={StudiedCourse} />
+              <Route exact path="/create_lesson/:course_id/:is_teacher"  component={CreateLesson} />
+              <Route exact path="/lesson/:lesson_id"  component={StudiedLesson} />
               <Route exact path="/word_question/:lesson_id"  component={WordQuestion} />
               <Route exact path="/create_supervised_course"  component={CreateSupervisedCourse} />
+              <Route exact path="/supervised_courses"  component={SupervisedCourses} />
+              <Route exaxt path="/supervised_course/:course_id" component={SupervisedCourse}/>
+              <Route exact path="/supervised_lesson/:lesson_id"  component={SupervisedLesson} />
             </Switch>
           </div>
         </div>

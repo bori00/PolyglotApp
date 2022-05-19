@@ -58,7 +58,7 @@ public class StudentCourseManagementController {
     @GetMapping("/get_enrolled_course_data")
     @PreAuthorize("hasAuthority('STUDENT')")
     public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException, CourseNotFoundException {
-        logger.info("REQUEST - /get_enrolled_course_data");
+        logger.info("REQUEST - /get_enrolled_course_data for course {}", courseId);
         return studentCourseLessonManagementService.getEnrolledCourseData(courseId);
     }
 }

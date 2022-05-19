@@ -12,7 +12,7 @@ import LessonManagementService from "../services/lesson-management.service"
 const API_URL = "http://localhost:8081/polyglot/";
 
 
-export default class Lesson extends Component {
+export default class StudiedLesson extends Component {
     // send though props: lesson_id
     constructor(props) {
         super(props);

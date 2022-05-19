@@ -30,9 +30,9 @@ public class TeacherCourseManagementController {
             LoggerFactory.getLogger(StudentCourseManagementController.class);
 
     @PostMapping("/create_supervised_course")
-    public void createSelfTaughtCourse(@Valid @RequestBody SupervisedCourseDTO supervisedCourseDTO) throws LanguageNotFoundException, AccessRestrictedToTeachersException {
+    public ExtendedTaughtCourseDTO createSelfTaughtCourse(@Valid @RequestBody SupervisedCourseDTO supervisedCourseDTO) throws LanguageNotFoundException, AccessRestrictedToTeachersException {
         logger.info("REQUEST - /create_supervised_course with DTO {}", supervisedCourseDTO);
-        teacherCourseLessonManagementService.createSupervisedCourse(supervisedCourseDTO);
+        return teacherCourseLessonManagementService.createSupervisedCourse(supervisedCourseDTO);
     }
 
     @PostMapping(value = "/add_new_supervised_lesson", consumes =
@@ -46,14 +46,14 @@ public class TeacherCourseManagementController {
     }
 
     @GetMapping("/get_all_taught_courses")
-    public List<TaughtCourseDTO> getAllEnrolledCourses() throws AccessRestrictedToTeachersException {
+    public List<TaughtCourseDTO> getAllTaughtCourses() throws AccessRestrictedToTeachersException {
         logger.info("REQUEST - /get_all_taught_courses");
         return teacherCourseLessonManagementService.getAllTaughtCourses();
     }
 
     @GetMapping("/get_taught_course_data")
-    public ExtendedTaughtCourseDTO getEnrolledCourseData(Long courseId) throws InvalidCourseAccessException, CourseNotFoundException, AccessRestrictedToTeachersException {
-        logger.info("REQUEST - /get_taught_course_data");
+    public ExtendedTaughtCourseDTO getTaughtCourseData(Long courseId) throws InvalidCourseAccessException, CourseNotFoundException, AccessRestrictedToTeachersException {
+        logger.info("REQUEST - /get_taught_course_data for course {}", courseId);
         return teacherCourseLessonManagementService.getTaughtCourseData(courseId);
     }
 }

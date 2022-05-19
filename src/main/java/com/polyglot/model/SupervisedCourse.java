@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "supervised_course")
@@ -22,7 +23,7 @@ public class SupervisedCourse extends Course {
     // eager loading by default
     private Teacher teacher;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Integer joiningCode;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
@@ -40,8 +41,11 @@ public class SupervisedCourse extends Course {
         return new ArrayList<>(lessons);
     }
 
-    public SupervisedCourse(String title, Integer minPointsPerWord, Language language, Teacher teacher) {
+    public SupervisedCourse(String title, Integer minPointsPerWord, Language language,
+                            Teacher teacher, Integer joiningCode) {
         super(title, minPointsPerWord, language);
         this.teacher = teacher;
+        this.joiningCode = joiningCode;
+        this.lessons = new TreeSet<>();
     }
 }

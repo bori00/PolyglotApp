@@ -9,7 +9,7 @@ import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
 
 
-export default class Course extends Component {
+export default class StudiedCourse extends Component {
     // send though props: course_id
     constructor(props) {
         super(props);
@@ -65,7 +65,7 @@ export default class Course extends Component {
             )
         })
 
-        const create_lesson_link = "/create_lesson/" + this.props.match.params.course_id;
+        const create_lesson_link = "/create_lesson/" + this.props.match.params.course_id + "/false";
 
         return (
             <div className="col-md-12">

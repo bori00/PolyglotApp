@@ -61,7 +61,7 @@ public class TeacherCourseLessonManagementService {
      * @throws AccessRestrictedToTeachersException if the current user is not a teacher.
      * @throws LanguageNotFoundException           if the requested language is not supported.
      */
-    public SupervisedCourse createSupervisedCourse(SupervisedCourseDTO supervisedCourseDTO) throws LanguageNotFoundException, AccessRestrictedToTeachersException {
+    public ExtendedTaughtCourseDTO createSupervisedCourse(SupervisedCourseDTO supervisedCourseDTO) throws LanguageNotFoundException, AccessRestrictedToTeachersException {
         Teacher teacher = authenticationService.getCurrentTeacher();
 
         Optional<Language> optLanguage =
@@ -77,7 +77,8 @@ public class TeacherCourseLessonManagementService {
         SupervisedCourse supervisedCourse = new SupervisedCourse(supervisedCourseDTO.getTitle(),
                 supervisedCourseDTO.getMinPointsPerWord(),
                 optLanguage.get(),
-                teacher);
+                teacher,
+                -1);
 
         SupervisedCourse savedCourse = supervisedCourseRepository.save(supervisedCourse);
 
@@ -87,7 +88,15 @@ public class TeacherCourseLessonManagementService {
 
         logger.info("UPDATE - created new course {}", savedCourse.toString());
 
-        return savedCourse;
+        return new ExtendedTaughtCourseDTO(
+                savedCourse.getId(),
+                savedCourse.getTitle(),
+                savedCourse.getLanguage().getName(),
+                savedCourse.getEnrollments().size(),
+                savedCourse.getLessons().stream().collect(Collectors.toMap(Lesson::getId,
+                        Lesson::getTitle)),
+                savedCourse.getJoiningCode()
+        );
     }
 
 
@@ -173,7 +182,7 @@ public class TeacherCourseLessonManagementService {
             throw new CourseNotFoundException();
         }
 
-        Course course = optCourse.get();
+        SupervisedCourse course = optCourse.get();
         if (!rightVerifier.hasAccessToTheDataOf(teacher, course)) {
             logger.warn("INVALID ACCESS = attempt to access data of course {} by teacher {}, who " +
                             "is not the supervisor of the course",
@@ -187,6 +196,7 @@ public class TeacherCourseLessonManagementService {
                 course.getLanguage().getName(),
                 course.getEnrollments().size(),
                 course.getLessons().stream().collect(Collectors.toMap(Lesson::getId,
-                        Lesson::getTitle)));
+                        Lesson::getTitle)),
+                course.getJoiningCode());
     }
 }
