@@ -34,6 +34,19 @@ class CourseManagementService {
         })
     }
 
+    joinSupervisedCourse(joining_code) {
+
+        return fetch(API_URL + "join_supervised_course", {
+            method: 'POST',
+            headers: Object.assign({}, {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                "charset": "UTF-8"
+            }, authHeader()),
+            body: joining_code
+        })
+    }
+
     getAllEnrolledCourses() {
         return fetch(API_URL + "get_all_enrolled_courses", {
             method: 'GET',

@@ -61,9 +61,9 @@ public class LessonStudyService {
 
         Lesson lesson = lessonRepository.getById(lessonId);
 
-        if (!rightVerifier.hasRightToModifyTheDataOf(student, lesson)) {
+        if (!rightVerifier.hasAccessToTheDataOf(student, lesson)) {
             logger.warn("INVALID UPDATE = attempt to add an unknown word to a lesson {} that the " +
-                    "user {} doesn't have access to", student, lessonId);
+                    "user {} doesn't have access to", lesson, student);
             throw new InvalidCourseAccessException();
         }
 

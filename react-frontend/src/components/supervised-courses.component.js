@@ -49,7 +49,7 @@ export default class SupervisedCourses extends Component {
                 key={course.id}
                 action
                 href={href_link}
-                className="d-flex justify-content-between align-items-start"
+                // className="d-flex justify-content-between align-items-start"
             >
                 <div className="ms-2 me-auto">
                     <div className="fw-bold">{course.title}</div>

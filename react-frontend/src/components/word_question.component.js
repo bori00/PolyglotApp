@@ -126,7 +126,7 @@ export default class WordQuestion extends Component {
                     {this.state.loading && (
                         <Fragment>
                             <p>Loading...</p>
-                            <p style={{color: "red"}}>{this.state.errorMessage}</p>
+                            <p style={{color: "green"}}>{this.state.errorMessage}</p>
                         </Fragment>
                     )}
                     {!this.state.loading && (

@@ -191,7 +191,7 @@ export default class CreateSupervisedCourse extends Component {
 
                     {this.state.successful && (
                         <Fragment>
-                            <p style={{color: "red"}}>Course {this.state.title} successfully saved.</p>
+                            <p style={{color: "green"}}>Course <b>{this.state.title}</b> successfully saved.</p>
                             <p>Share the <b>code {this.state.joiningCode}</b> with your students, who would like to join the course.</p>
                         </Fragment>
                     )}

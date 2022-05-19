@@ -45,6 +45,9 @@ public class StudentCourseLessonManagementService {
     private CourseEnrollmentRepository courseEnrollmentRepository;
 
     @Autowired
+    private SupervisedCourseRepository supervisedCourseRepository;
+
+    @Autowired
     private CourseRepository courseRepository;
 
     @Autowired
@@ -173,10 +176,10 @@ public class StudentCourseLessonManagementService {
     public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException, CourseNotFoundException {
         Student student = authenticationService.getCurrentStudent();
 
-        Optional<SelfTaughtCourse> optCourse = selfTaughtCourseRepository.findById(courseId);
+        Optional<Course> optCourse = courseRepository.findById(courseId);
 
         if (optCourse.isEmpty()) {
-            logger.warn("INVALID UPDATE = attempt to add a lesson to a course {} that does not " +
+            logger.warn("INVALID REQUEST = attempt to access data of course {} that does not " +
                     "exist", courseId);
             throw new CourseNotFoundException();
         }
@@ -198,5 +201,32 @@ public class StudentCourseLessonManagementService {
                 course.getLanguage().getName(), teacherName,
                 course.getLessons().stream().collect(Collectors.toMap(Lesson::getId,
                         Lesson::getTitle)));
+    }
+
+    /**
+     * Enrolls the active student in the csupervised course with the given joining code.
+     * @param joiningCode is the code of the course joined by the active student.
+     * @throws CourseNotFoundException if no course with the given id exists.
+     * @throws AccessRestrictedToStudentsException if the active user is not a student.
+     */
+    public void joinSupervisedCourse(Integer joiningCode) throws CourseNotFoundException,
+            AccessRestrictedToStudentsException {
+        Student student = authenticationService.getCurrentStudent();
+
+        Optional<SupervisedCourse> optCourse = supervisedCourseRepository.findByJoiningCode(joiningCode);
+
+        if (optCourse.isEmpty()) {
+            logger.warn("INVALID UPDATE = attempt to join course with code {} that does not " +
+                    "exist", joiningCode);
+            throw new CourseNotFoundException();
+        }
+
+        SupervisedCourse course = optCourse.get();
+
+        course.addCourseEnrollment(student);
+
+        supervisedCourseRepository.save(course);
+
+        logger.warn("UPDATE = student {} enrolled in course {}", student, course.getId());
     }
 }
