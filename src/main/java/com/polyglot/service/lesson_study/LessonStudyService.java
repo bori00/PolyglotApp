@@ -9,6 +9,7 @@ import com.polyglot.repository.LessonRepository;
 import com.polyglot.repository.WordToLearnRepository;
 import com.polyglot.service.authentication.AuthenticationService;
 import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudentsException;
+import com.polyglot.service.lesson_study.exceptions.DuplicateWordToLearnException;
 import com.polyglot.service.right_restrictions.RightVerifier;
 import com.polyglot.service.student_course_lesson_management.exceptions.CourseNotFoundException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
@@ -55,8 +56,9 @@ public class LessonStudyService {
      * @throws AccessRestrictedToStudentsException if the active user is not a student.
      * @throws InvalidCourseAccessException        if the active user is nt enrolled in the course to
      *                                             which the lesson belongs.
+     * @throws DuplicateWordToLearnException if the user already had added the same word before.
      */
-    public void saveUnknownWord(Long lessonId, String word) throws AccessRestrictedToStudentsException, InvalidCourseAccessException {
+    public void saveUnknownWord(Long lessonId, String word) throws AccessRestrictedToStudentsException, InvalidCourseAccessException, DuplicateWordToLearnException {
         Student student = authenticationService.getCurrentStudent();
 
         Lesson lesson = lessonRepository.getById(lessonId);
@@ -70,6 +72,15 @@ public class LessonStudyService {
         Optional<CourseEnrollment> courseEnrollment =
                 courseEnrollmentRepository.findByCourseAndStudent(lesson.getCourse(), student);
         // guaranteed to be present due to the previous check
+
+        // verify that the same word was not added before
+        if (wordToLearnRepository.findByLessonAndCourseEnrollmentAndOriginalWord(lesson,
+                courseEnrollment.get(), word).isPresent()) {
+            logger.warn("INVALID UPDATE = attempt to add a duplicate unknown word {}, to a lesson" +
+                            " {} by user {}",
+                    word, lesson, student);
+            throw new DuplicateWordToLearnException();
+        }
 
         String translatedWord = translatorService.getTranslation(word,
                 lesson.getCourse().getLanguage(), student.getNativeLanguage());

@@ -5,6 +5,7 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToTeachers
 import com.polyglot.service.authentication.exceptions.AuthenticationRequiredException;
 import com.polyglot.service.authentication.exceptions.DuplicateUsernameException;
 import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
+import com.polyglot.service.lesson_study.exceptions.DuplicateWordToLearnException;
 import com.polyglot.service.student_course_lesson_management.exceptions.DuplicateEnrollmentException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_lesson_management.exceptions.LanguageNotFoundException;
@@ -118,5 +119,13 @@ public class GlobalControllerExceptionHandler {
             Exception ex) {
         return new ExceptionResponse(List.of("You can't get enrolled in a course that you are " +
                 "already enrolled in."));
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403
+    @ExceptionHandler(DuplicateWordToLearnException.class)
+    public @ResponseBody
+    ExceptionResponse handleDuplicateWordToLearnException(
+            Exception ex) {
+        return new ExceptionResponse(List.of("You have already added this unknown word."));
     }
 }

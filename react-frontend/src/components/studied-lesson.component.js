@@ -58,9 +58,11 @@ export default class StudiedLesson extends Component {
                             successful: true
                         })
                     } else {
-                        this.setState({
-                            message: "Could not save " + this.state.word,
-                            successful: false
+                        response.json().then(response => response.messages.join("\n")).then(errorMsg => {
+                            this.setState({
+                                successful: false,
+                                message: errorMsg
+                            });
                         })
                     }
                 })
