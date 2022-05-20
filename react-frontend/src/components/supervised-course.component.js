@@ -70,6 +70,8 @@ export default class SupervisedCourse extends Component {
 
         const create_lesson_link = "/create_lesson/" + this.props.match.params.course_id  + "/true";
 
+        const supervised_course_statistics_link = "/supervised_course_statistics/" + this.props.match.params.course_id;
+
         return (
             <div className="col-md-12">
                 <div className="card card-container">
@@ -87,8 +89,17 @@ export default class SupervisedCourse extends Component {
                     {!this.state.loading && (
                         <Fragment>
                             <h1>{this.state.course_title}</h1>
-                            <h4>Joining Code: {this.state.course_joining_code}</h4>
+                            <h4>Joining Code: <b>{this.state.course_joining_code}</b></h4>
+                            <h4>Nr. of Students: {this.state.course_nr_of_students}</h4>
                             <h6>{this.state.course_language}</h6>
+
+                            <div className="text-center">
+                                <Link to={supervised_course_statistics_link}>
+                                    <button type="button" className="btn btn-outline-secondary">
+                                        Course Statistics
+                                    </button>
+                                </Link>
+                            </div>
 
 
                             <hr/>

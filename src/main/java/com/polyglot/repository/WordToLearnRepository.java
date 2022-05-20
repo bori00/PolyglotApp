@@ -11,4 +11,6 @@ public interface WordToLearnRepository extends JpaRepository<WordToLearn, Long> 
     List<WordToLearn> findByLessonAndCourseEnrollmentAndCollectedPointsLessThan(Lesson lesson,
                                                                                 CourseEnrollment courseEnrollment,
                                                                                 int targetPoints);
+
+    List<WordToLearn> findByLesson(Lesson lesson);
 }

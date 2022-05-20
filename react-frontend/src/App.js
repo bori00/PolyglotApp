@@ -20,6 +20,7 @@ import CreateSupervisedCourse from "./components/create-supervised-course.compon
 import SupervisedCourses from "./components/supervised-courses.component"
 import SupervisedCourse from "./components/supervised-course.component";
 import SupervisedLesson from "./components/supervised-lesson.component";
+import SupervisedCourseStatistics from "./components/supervised-course-statistics.component";
 
 class App extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.title = "Polyglot"
     const user = AuthService.getCurrentUser();
     if (user) {
       this.setState({
@@ -133,6 +135,7 @@ class App extends Component {
               <Route exact path="/supervised_courses"  component={SupervisedCourses} />
               <Route exaxt path="/supervised_course/:course_id" component={SupervisedCourse}/>
               <Route exact path="/supervised_lesson/:lesson_id"  component={SupervisedLesson} />
+              <Route exact path="/supervised_course_statistics/:course_id"  component={SupervisedCourseStatistics} />
             </Switch>
           </div>
         </div>
