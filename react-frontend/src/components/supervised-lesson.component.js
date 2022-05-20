@@ -16,6 +16,10 @@ export default class SupervisedLesson extends Component {
         this.state = {
             loading: true,
             lesson_file_url: undefined,
+            lesson_title: undefined,
+            course_title: undefined,
+            course_id: undefined,
+            index_inside_course: undefined,
             message: "",
             successful: false
         };
@@ -27,13 +31,27 @@ export default class SupervisedLesson extends Component {
                 this.setState({
                     lesson_file_url: URL.createObjectURL(response)
                 })
+            }).then(() => {
+            LessonManagementService.getLessonsData(this.props.match.params.lesson_id)
+                .then(response => {
+                    response.json().then(response => {
+                        this.setState({
+                            lesson_title: response.title,
+                            course_title: response.courseTitle,
+                            course_id: response.courseId,
+                            index_inside_course: response.indexInsideCourse,
+                            loading: false
+                        })
+                    })
+                })
             })
-        this.setState({
-            loading: false
-        })
     }
 
     render() {
+
+        const supervised_lesson_statistics_link = "/supervised_lesson_statistics/" + this.props.match.params.lesson_id;
+
+        const course_link = "/supervised_course/" + this.state.course_id;
 
         return (
             <Fragment>
@@ -51,7 +69,24 @@ export default class SupervisedLesson extends Component {
                     )}
                     {!this.state.loading && (
                         <Fragment>
-                            <h1>Lesson</h1>
+                            <h1>{this.state.lesson_title}</h1>
+                            <h5>Lesson nr. {this.state.index_inside_course} of course <i>"{this.state.course_title}"</i></h5>
+
+                            <div className="text-center">
+                                <Link to={course_link}>
+                                    <button type="button" className="btn btn btn-outline-secondary">
+                                        Back to the Course
+                                    </button>
+                                </Link>
+                            </div>
+
+                            <div className="text-center">
+                                <Link to={supervised_lesson_statistics_link}>
+                                    <button type="button" className="btn btn-outline-secondary">
+                                        Lesson Statistics
+                                    </button>
+                                </Link>
+                            </div>
 
                             <hr></hr>
 

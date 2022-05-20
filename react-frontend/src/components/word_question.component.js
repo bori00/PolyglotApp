@@ -127,6 +127,14 @@ export default class WordQuestion extends Component {
                         <Fragment>
                             <p>Loading...</p>
                             <p style={{color: "green"}}>{this.state.errorMessage}</p>
+
+                            <div className="text-center">
+                                <Link to={lesson_link}>
+                                    <button type="button" className="btn btn btn-outline-secondary">
+                                        Back to the Lesson
+                                    </button>
+                                </Link>
+                            </div>
                         </Fragment>
                     )}
                     {!this.state.loading && (
@@ -242,7 +250,7 @@ export default class WordQuestion extends Component {
 
                             <div className="text-center">
                                 <Link to={lesson_link}>
-                                    <button type="button" className="btn btn-secondary btn-block">
+                                    <button type="button" className="btn btn btn-outline-secondary">
                                         Back to the Lesson
                                     </button>
                                 </Link>

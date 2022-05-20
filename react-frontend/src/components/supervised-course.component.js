@@ -90,7 +90,7 @@ export default class SupervisedCourse extends Component {
                         <Fragment>
                             <h1>{this.state.course_title}</h1>
                             <h4>Joining Code: <b>{this.state.course_joining_code}</b></h4>
-                            <h4>Nr. of Students: {this.state.course_nr_of_students}</h4>
+                            <h6>Nr. of Students: {this.state.course_nr_of_students}</h6>
                             <h6>{this.state.course_language}</h6>
 
                             <div className="text-center">

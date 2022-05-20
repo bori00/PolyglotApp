@@ -21,6 +21,7 @@ import SupervisedCourses from "./components/supervised-courses.component"
 import SupervisedCourse from "./components/supervised-course.component";
 import SupervisedLesson from "./components/supervised-lesson.component";
 import SupervisedCourseStatistics from "./components/supervised-course-statistics.component";
+import SupervisedLessonStatistics from "./components/supervised-lesson-statistics.component";
 
 class App extends Component {
   constructor(props) {
@@ -136,6 +137,7 @@ class App extends Component {
               <Route exaxt path="/supervised_course/:course_id" component={SupervisedCourse}/>
               <Route exact path="/supervised_lesson/:lesson_id"  component={SupervisedLesson} />
               <Route exact path="/supervised_course_statistics/:course_id"  component={SupervisedCourseStatistics} />
+              <Route exact path="/supervised_lesson_statistics/:lesson_id"  component={SupervisedLessonStatistics} />
             </Switch>
           </div>
         </div>

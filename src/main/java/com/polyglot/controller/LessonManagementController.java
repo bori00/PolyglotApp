@@ -1,5 +1,6 @@
 package com.polyglot.controller;
 
+import com.polyglot.model.DTO.LessonDTO;
 import com.polyglot.service.lesson_management.LessonManagementService;
 import com.polyglot.service.lesson_practice.exceptions.LessonNotFoundException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
@@ -39,5 +40,11 @@ public class LessonManagementController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(file);
+    }
+
+    @GetMapping("/get_lesson_data")
+    public LessonDTO saveUnknownWord(@RequestParam Long lessonId) throws LessonNotFoundException, InvalidCourseAccessException {
+        logger.info("REQUEST - /get_lesson_data for lesson {}", lessonId);
+        return lessonManagementService.getLessonData(lessonId);
     }
 }

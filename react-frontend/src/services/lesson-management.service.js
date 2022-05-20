@@ -21,5 +21,22 @@ class LessonManagementService {
         }).then(res => res.blob())
     }
 
+    getLessonsData(lesson_id) {
+        var url = new URL(API_URL + "get_lesson_data")
+
+        var params = {"lessonId": lesson_id}
+        params = new URLSearchParams(params);
+        url.search = new URLSearchParams(params).toString();
+
+        return fetch(url, {
+            method: 'GET',
+            headers: Object.assign({}, {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                "charset": "UTF-8"
+            }, authHeader())
+        })
+    }
+
 }
 export default new LessonManagementService();

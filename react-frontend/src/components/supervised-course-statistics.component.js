@@ -70,12 +70,14 @@ export default class SupervisedCourseStatistics extends Component {
             const value = lesson_values[index];
             lessonListGroupItems.push(
                 <tr>
-                    <td>{index}</td>
+                    <td>{index+1}</td>
                     <td>{title}</td>
                     <td>{value}</td>
                 </tr>
             )
         });
+
+        const course_link = "/supervised_course/" + this.props.match.params.course_id;
 
         return (
             <div className="col-md-12">
@@ -94,8 +96,16 @@ export default class SupervisedCourseStatistics extends Component {
                     {!this.state.loading && (
                         <Fragment>
                             <h1>{this.state.course_title}</h1>
-                            <h4>Joining Code: {this.state.course_joining_code}</h4>
+                            <h4>Joining Code: <b>{this.state.course_joining_code}</b></h4>
                             <h6>{this.state.course_language}</h6>
+
+                            <div className="text-center">
+                                <Link to={course_link}>
+                                    <button type="button" className="btn btn btn-outline-secondary">
+                                        Back to the Course
+                                    </button>
+                                </Link>
+                            </div>
 
                             <hr/>
 
