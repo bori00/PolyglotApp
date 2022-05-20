@@ -11,6 +11,7 @@ import com.polyglot.service.lesson_storage.LessonStorageService;
 import com.polyglot.service.lesson_storage.exceptions.FileStorageException;
 import com.polyglot.service.right_restrictions.RightVerifier;
 import com.polyglot.service.student_course_lesson_management.exceptions.CourseNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.DuplicateEnrollmentException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_lesson_management.exceptions.LanguageNotFoundException;
 import org.slf4j.Logger;
@@ -210,7 +211,7 @@ public class StudentCourseLessonManagementService {
      * @throws AccessRestrictedToStudentsException if the active user is not a student.
      */
     public void joinSupervisedCourse(Integer joiningCode) throws CourseNotFoundException,
-            AccessRestrictedToStudentsException {
+            AccessRestrictedToStudentsException, DuplicateEnrollmentException {
         Student student = authenticationService.getCurrentStudent();
 
         Optional<SupervisedCourse> optCourse = supervisedCourseRepository.findByJoiningCode(joiningCode);
@@ -222,6 +223,13 @@ public class StudentCourseLessonManagementService {
         }
 
         SupervisedCourse course = optCourse.get();
+
+        if (course.isEnrolled(student)) {
+            logger.warn("INVALID UPDATE = attempt to join course with code {} by student {}, but " +
+                            "student is already enrolled",
+                    joiningCode, student);
+            throw new DuplicateEnrollmentException();
+        }
 
         course.addCourseEnrollment(student);
 

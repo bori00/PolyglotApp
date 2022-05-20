@@ -7,6 +7,7 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudents
 import com.polyglot.service.lesson_storage.exceptions.FileStorageException;
 import com.polyglot.service.student_course_lesson_management.StudentCourseLessonManagementService;
 import com.polyglot.service.student_course_lesson_management.exceptions.CourseNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.DuplicateEnrollmentException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_lesson_management.exceptions.LanguageNotFoundException;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class StudentCourseManagementController {
 
     @PostMapping("/join_supervised_course")
     public void joinSupervisedCourse(@RequestBody Integer joiningCode) throws AccessRestrictedToStudentsException,
-            CourseNotFoundException {
+            CourseNotFoundException, DuplicateEnrollmentException {
         logger.info("REQUEST - /join_supervised_course for course with code {}", joiningCode);
         studentCourseLessonManagementService.joinSupervisedCourse(joiningCode);
     }

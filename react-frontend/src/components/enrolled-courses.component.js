@@ -18,7 +18,8 @@ export default class EnrolledCourses extends Component {
             loading: true,
             courses: [],
             joining_code: undefined,
-            message: ""
+            message: "",
+            successful: true
         };
     }
 
@@ -47,10 +48,19 @@ export default class EnrolledCourses extends Component {
     }
 
     handleJoinCourse(e) {
+        e.preventDefault();
+
+
         CourseManagementService.joinSupervisedCourse(this.state.joining_code)
             .then(response => {
                 if (response.ok) {
-                    this.componentDidMount()
+                    const obj = this;
+                    this.setState({
+                        successful: true,
+                        message: ""
+                    }, () => {
+                        obj.componentDidMount();
+                    });
                 } else {
                     response.json().then(response => response.messages.join("\n")).then(errorMsg => {
                         this.setState({
@@ -113,7 +123,7 @@ export default class EnrolledCourses extends Component {
                         <div className="form-group">
                             <label htmlFor="joining_code">Code:</label>
                             <Input
-                                type="text"
+                                type="number"
                                 className="form-control"
                                 name="joining_code"
                                 maxLength="50"

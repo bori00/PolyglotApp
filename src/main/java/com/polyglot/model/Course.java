@@ -81,4 +81,8 @@ public abstract class Course {
         result = 31 * result + (title != null ? title.hashCode() : 0);
         return result;
     }
+
+    public boolean isEnrolled(Student student) {
+        return enrollments.stream().anyMatch(courseEnrollment -> courseEnrollment.getStudent().equals(student));
+    }
 }
