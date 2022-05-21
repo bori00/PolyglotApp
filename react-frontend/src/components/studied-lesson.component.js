@@ -8,6 +8,7 @@ import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
 import LessonManagementService from "../services/lesson-management.service"
+import LessonPracticeService from "../services/lesson-practice.service"
 
 const API_URL = "http://localhost:8081/polyglot/";
 
@@ -83,6 +84,11 @@ export default class StudiedLesson extends Component {
         }
     }
 
+    downloadVocabulary(e) {
+        e.preventDefault();
+        LessonPracticeService.getLessonVocabularyPDF(this.props.match.params.lesson_id, this.state.lesson_title);
+    }
+
 
     render() {
 
@@ -124,6 +130,11 @@ export default class StudiedLesson extends Component {
                                     </button>
                                 </Link>
                             </div>
+
+                            <button onClick={e => this.downloadVocabulary(e)}
+                                    className="btn btn-secondary btn-block">
+                                Download Vocabulary in PDF
+                            </button>
 
                             <hr></hr>
 

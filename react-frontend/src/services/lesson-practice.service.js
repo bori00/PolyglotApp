@@ -1,5 +1,6 @@
 import authHeader from "./auth-header";
 import axios from "axios";
+import download from "downloadjs"
 
 const API_URL = "http://localhost:8081/polyglot/";
 
@@ -33,6 +34,25 @@ class LessonPracticeService {
             }, authHeader()),
             body: JSON.stringify(body)
         })
+    }
+
+    getLessonVocabularyPDF(lesson_id, lesson_title) {
+        var url = new URL(API_URL + "get_lesson_vocabulary_in_pdf")
+
+        var params = {"lessonId": lesson_id}
+
+        url.search = new URLSearchParams(params).toString();
+
+        return fetch(url, {
+            method: 'GET',
+            headers: Object.assign({}, {
+                'Content-Type': 'application/json',
+                "charset": "UTF-8"
+            }, authHeader())
+        }).then(res => res.blob())
+            .then( blob => {
+                download(blob,  lesson_title + "_Vocabulary.pdf");
+            });
     }
 
 }
