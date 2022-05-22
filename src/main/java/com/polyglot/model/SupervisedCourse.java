@@ -48,4 +48,8 @@ public class SupervisedCourse extends Course {
         this.joiningCode = joiningCode;
         this.lessons = new TreeSet<>();
     }
+
+    public void addLesson(SupervisedLesson lesson) {
+        this.lessons.add(lesson);
+    }
 }
