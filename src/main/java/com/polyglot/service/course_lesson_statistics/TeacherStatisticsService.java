@@ -80,8 +80,14 @@ public class TeacherStatisticsService {
 
         List<Double> avgNrOfUnknownWordsPerLesson = new ArrayList<>();
 
-        for (Lesson lesson : course.getLessons()) {
-            avgNrOfUnknownWordsPerLesson.add((wordToLearnRepository.findByLesson(lesson).size() / ((double) nrStudents)));
+        if (nrStudents > 0) {
+            for (Lesson lesson : course.getLessons()) {
+                avgNrOfUnknownWordsPerLesson.add((wordToLearnRepository.findByLesson(lesson).size() / ((double) nrStudents)));
+            }
+        } else {
+            for (Lesson lesson : course.getLessons()) {
+                avgNrOfUnknownWordsPerLesson.add(0D);
+            }
         }
 
         return new CourseStatisticsDTO(nrStudents, lessonTitles, avgNrOfUnknownWordsPerLesson);
