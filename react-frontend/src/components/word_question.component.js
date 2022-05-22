@@ -4,6 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import LessonPracticeService from "../services/lesson-practice.service"
 import {Link} from "react-router-dom";
+import AuthService from "../services/auth.service";
 
 const API_URL = "http://localhost:8081/polyglot/";
 
@@ -69,6 +70,7 @@ export default class WordQuestion extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("STUDENT", this);
         this.loadNewQuestion()
     }
 

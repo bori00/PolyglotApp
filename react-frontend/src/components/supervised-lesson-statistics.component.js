@@ -8,6 +8,7 @@ import UtilService from "../services/util.service"
 import Select from 'react-select'
 import {ListGroupItem, Table} from "reactstrap";
 import {Link} from "react-router-dom";
+import AuthService from "../services/auth.service";
 
 
 export default class SupervisedLessonStatistics extends Component {
@@ -25,6 +26,8 @@ export default class SupervisedLessonStatistics extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("TEACHER", this);
+
         CourseStatisticsService.getLessonStatistics(this.props.match.params.lesson_id)
             .then(response => {
                 if (response.ok) {

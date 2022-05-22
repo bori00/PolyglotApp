@@ -6,6 +6,7 @@ import CourseManagementService from "../services/course-management.service"
 import UtilService from "../services/util.service"
 import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
+import AuthService from "../services/auth.service";
 
 
 export default class SupervisedCourses extends Component {
@@ -22,6 +23,8 @@ export default class SupervisedCourses extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("TEACHER", this);
+
         CourseManagementService.getAllSupervisedCourses()
             .then(response => {
                 if (response.ok) {

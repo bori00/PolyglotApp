@@ -8,6 +8,7 @@ import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
 import LessonManagementService from "../services/lesson-management.service"
+import AuthService from "../services/auth.service";
 
 export default class SupervisedLesson extends Component {
     // send though props: lesson_id
@@ -26,6 +27,8 @@ export default class SupervisedLesson extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("TEACHER", this);
+
         LessonManagementService.getLessonsContent(this.props.match.params.lesson_id)
             .then(response => {
                 this.setState({

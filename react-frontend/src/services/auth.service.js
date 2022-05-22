@@ -52,11 +52,15 @@ class AuthService {
         return JSON.parse(localStorage.getItem('user'));
     }
 
-    // setCurrentUserHasRestaurant() {
-    //     let user = this.getCurrentUser();
-    //     localStorage.removeItem("user");
-    //     user.hasRestaurant = true;
-    //     localStorage.setItem("user", JSON.stringify(user));
-    // }
+    guaranteeUserHasRole(role, component) {
+        const user = this.getCurrentUser();
+        if (user.role !== role) {
+            this.logout();
+            component.props.history.push("/login");
+            window.location.reload();
+            window.alert("Please sign in with a " + role + " account to access this" +
+                " functionality.");
+        }
+    }
 }
 export default new AuthService();

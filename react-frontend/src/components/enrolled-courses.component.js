@@ -7,6 +7,7 @@ import UtilService from "../services/util.service"
 import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
+import AuthService from "../services/auth.service";
 
 
 export default class EnrolledCourses extends Component {
@@ -28,6 +29,8 @@ export default class EnrolledCourses extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("STUDENT", this);
+
         CourseManagementService.getAllEnrolledCourses()
             .then(response => {
                 if (response.ok) {

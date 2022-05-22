@@ -9,6 +9,7 @@ import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
 import LessonManagementService from "../services/lesson-management.service"
 import LessonPracticeService from "../services/lesson-practice.service"
+import AuthService from "../services/auth.service";
 
 const API_URL = "http://localhost:8081/polyglot/";
 
@@ -33,6 +34,8 @@ export default class StudiedLesson extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("STUDENT", this);
+
         LessonManagementService.getLessonsContent(this.props.match.params.lesson_id)
             .then(response => {
                 this.setState({

@@ -5,6 +5,7 @@ import CheckButton from "react-validation/build/button";
 import CourseManagementService from "../services/course-management.service"
 import UtilService from "../services/util.service"
 import Select from 'react-select'
+import AuthService from "../services/auth.service";
 
 
 export default class CreateSupervisedCourse extends Component {
@@ -31,6 +32,8 @@ export default class CreateSupervisedCourse extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("TEACHER", this);
+
         UtilService.getAllLanguages()
             .then(response => {
                 if (response.ok) {
