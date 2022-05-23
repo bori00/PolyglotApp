@@ -22,7 +22,7 @@ class LessonManagementService {
     }
 
     getLessonsData(lesson_id) {
-        var url = new URL(API_URL + "get_lesson_data")
+        var url = new URL(API_URL + "get_lesson_data");
 
         var params = {"lessonId": lesson_id}
         params = new URLSearchParams(params);
