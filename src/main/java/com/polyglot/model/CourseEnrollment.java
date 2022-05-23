@@ -31,4 +31,9 @@ public class CourseEnrollment {
     public CourseEnrollment(Student student) {
         this.student = student;
     }
+
+    public CourseEnrollment(Student student, Course course) {
+        this.student = student;
+        this.course = course;
+    }
 }

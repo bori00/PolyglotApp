@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {View} from "react-native";
 import { Link, withRouter } from "react-router-dom";
 import { Route, Switch } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,10 +12,16 @@ import Register from "./components/register.component";
 import Home from "./components/home.component";
 import CreateSelfTaughtCourse from "./components/create-self-taught-course.component";
 import EnrolledCourses from "./components/enrolled-courses.component";
-import Course from "./components/course.component"
+import StudiedCourse from "./components/studied-course.component"
 import CreateLesson from "./components/create_lesson";
-import Lesson from "./components/lesson.component";
+import StudiedLesson from "./components/studied-lesson.component";
 import WordQuestion from "./components/word_question.component";
+import CreateSupervisedCourse from "./components/create-supervised-course.component";
+import SupervisedCourses from "./components/supervised-courses.component"
+import SupervisedCourse from "./components/supervised-course.component";
+import SupervisedLesson from "./components/supervised-lesson.component";
+import SupervisedCourseStatistics from "./components/supervised-course-statistics.component";
+import SupervisedLessonStatistics from "./components/supervised-lesson-statistics.component";
 
 class App extends Component {
   constructor(props) {
@@ -29,6 +36,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.title = "Polyglot"
     const user = AuthService.getCurrentUser();
     if (user) {
       this.setState({
@@ -49,7 +57,14 @@ class App extends Component {
         <div>
           <nav className="navbar navbar-expand navbar-dark bg-dark">
             <Link to={"/home"} className="navbar-brand">
-              Polyglot
+              <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                <img
+                    src={require('./assets/languages.png')}
+                    alt="world"
+                    style={{margin: "0px 5px"}}
+                />
+                Polyglot
+              </View>
             </Link>
             <div className="navbar-nav mr-auto">
               {showStudentBoard && (
@@ -68,8 +83,15 @@ class App extends Component {
               )}
               {showTeacherBoard && (
                   <li className="nav-item">
-                    <Link to={"/teachers_home"} className="nav-link">
-                      Home
+                    <Link to={"/supervised_courses"} className="nav-link">
+                      Supervised Courses
+                    </Link>
+                  </li>
+              )}
+              {showTeacherBoard && (
+                  <li className="nav-item">
+                    <Link to={"/create_supervised_course"} className="nav-link">
+                      Create new Course
                     </Link>
                   </li>
               )}
@@ -106,10 +128,16 @@ class App extends Component {
               <Route path="/create_self_taught_course"  component={CreateSelfTaughtCourse} />
               <Route path="/enrolled_courses"  component={EnrolledCourses} />
               <Route path="/teachers_home"  component={Home} />
-              <Route exact path="/course/:course_id"  component={Course} />
-              <Route exact path="/create_lesson/:course_id"  component={CreateLesson} />
-              <Route exact path="/lesson/:lesson_id"  component={Lesson} />
+              <Route exact path="/course/:course_id"  component={StudiedCourse} />
+              <Route exact path="/create_lesson/:course_id/:is_teacher"  component={CreateLesson} />
+              <Route exact path="/lesson/:lesson_id"  component={StudiedLesson} />
               <Route exact path="/word_question/:lesson_id"  component={WordQuestion} />
+              <Route exact path="/create_supervised_course"  component={CreateSupervisedCourse} />
+              <Route exact path="/supervised_courses"  component={SupervisedCourses} />
+              <Route exaxt path="/supervised_course/:course_id" component={SupervisedCourse}/>
+              <Route exact path="/supervised_lesson/:lesson_id"  component={SupervisedLesson} />
+              <Route exact path="/supervised_course_statistics/:course_id"  component={SupervisedCourseStatistics} />
+              <Route exact path="/supervised_lesson_statistics/:lesson_id"  component={SupervisedLessonStatistics} />
             </Switch>
           </div>
         </div>

@@ -7,9 +7,10 @@ import UtilService from "../services/util.service"
 import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
+import AuthService from "../services/auth.service";
 
 
-export default class Course extends Component {
+export default class StudiedCourse extends Component {
     // send though props: course_id
     constructor(props) {
         super(props);
@@ -24,6 +25,8 @@ export default class Course extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("STUDENT", this);
+
         CourseManagementService.getEnrolledCourse(this.props.match.params.course_id)
             .then(response => {
                 if (response.ok) {
@@ -65,7 +68,7 @@ export default class Course extends Component {
             )
         })
 
-        const create_lesson_link = "/create_lesson/" + this.props.match.params.course_id;
+        const create_lesson_link = "/create_lesson/" + this.props.match.params.course_id + "/false";
 
         return (
             <div className="col-md-12">

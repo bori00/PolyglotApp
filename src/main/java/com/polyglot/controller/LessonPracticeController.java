@@ -8,6 +8,7 @@ import com.polyglot.service.lesson_practice.LessonPracticeService;
 import com.polyglot.service.lesson_practice.exceptions.LessonNotFoundException;
 import com.polyglot.service.lesson_practice.exceptions.NoWordsToLearnException;
 import com.polyglot.service.lesson_practice.exceptions.WordToLearnNotFoundException;
+import com.polyglot.service.lesson_study.exceptions.DuplicateWordToLearnException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

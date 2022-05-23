@@ -22,4 +22,9 @@ public class SupervisedLesson extends Lesson {
     public Course getCourse() {
         return course;
     }
+
+    public SupervisedLesson(String title, Integer indexInsideCourse, SupervisedCourse course) {
+        super(title, indexInsideCourse);
+        this.course = course;
+    }
 }

@@ -8,7 +8,7 @@ import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service"
 
 export default class CreateLesson extends Component {
-    // send through props: course_id
+    // send through props: course_id, is_teacher
     constructor(props) {
         super(props);
         this.handleSaveLesson = this.handleSaveLesson.bind(this)
@@ -61,20 +61,40 @@ export default class CreateLesson extends Component {
                     message: "Max file size: 10MB"
                 })
             } else {
-                CourseManagementService.saveNewLesson(this.state.title, this.state.file, this.props.match.params.course_id, (event) => {
-                    this.setState({
-                        progress: Math.round((100 * event.loaded) / event.total),
-                    })
-                }).then((response) => {
-                    this.props.history.push("/course/" + this.props.match.params.course_id)
-                    window.location.reload();
-                }, (error) => {
+                const is_teacher = this.props.match.params.is_teacher
+                if (is_teacher === 'true') {
+                    // teacher
+                    CourseManagementService.saveNewSupervisedLesson(this.state.title, this.state.file, this.props.match.params.course_id, (event) => {
                         this.setState({
-                            successful: false,
-                            message: error.data
+                            progress: Math.round((100 * event.loaded) / event.total),
                         })
-                    }
-                )
+                    }).then((response) => {
+                            this.props.history.push("/supervised_course/" + this.props.match.params.course_id)
+                            window.location.reload();
+                        }, (error) => {
+                            this.setState({
+                                successful: false,
+                                message: error.data
+                            })
+                        }
+                    )
+                } else {
+                    console.log("HERE")
+                    CourseManagementService.saveNewSelfTaughtLesson(this.state.title, this.state.file, this.props.match.params.course_id, (event) => {
+                        this.setState({
+                            progress: Math.round((100 * event.loaded) / event.total),
+                        })
+                    }).then((response) => {
+                            this.props.history.push("/course/" + this.props.match.params.course_id)
+                            window.location.reload();
+                        }, (error) => {
+                            this.setState({
+                                successful: false,
+                                message: error.data
+                            })
+                        }
+                    )
+                }
             }
         } else {
             this.setState({
@@ -127,7 +147,7 @@ export default class CreateLesson extends Component {
                             </div>
                         )}
                         <label className="btn btn-outline-secondary">
-                            <input type="file" onChange={this.onSelectFile} accept=".pdf"/>
+                            <input type="file" onChange={this.onSelectFile} accept=".pdf" required/>
                         </label>
                         <p>Max 10MB, PDF only</p>
                         <div className="form-group text-center">

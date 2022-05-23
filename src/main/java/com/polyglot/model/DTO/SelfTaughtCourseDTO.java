@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
- * DTO used for client-server communication, representing a elf-taught course.
+ * DTO used for client-server communication, representing a self-taught course.
  */
 @Getter
 @AllArgsConstructor

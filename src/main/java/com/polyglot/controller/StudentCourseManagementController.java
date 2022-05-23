@@ -7,6 +7,7 @@ import com.polyglot.service.authentication.exceptions.AccessRestrictedToStudents
 import com.polyglot.service.lesson_storage.exceptions.FileStorageException;
 import com.polyglot.service.student_course_lesson_management.StudentCourseLessonManagementService;
 import com.polyglot.service.student_course_lesson_management.exceptions.CourseNotFoundException;
+import com.polyglot.service.student_course_lesson_management.exceptions.DuplicateEnrollmentException;
 import com.polyglot.service.student_course_lesson_management.exceptions.InvalidCourseAccessException;
 import com.polyglot.service.student_course_lesson_management.exceptions.LanguageNotFoundException;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAuthority('STUDENT')")
 public class StudentCourseManagementController {
 
     @Autowired
@@ -31,7 +33,6 @@ public class StudentCourseManagementController {
             LoggerFactory.getLogger(StudentCourseManagementController.class);
 
     @PostMapping("/create_self_taught_course")
-    @PreAuthorize("hasAuthority('STUDENT')")
     public void createSelfTaughtCourse(@Valid @RequestBody SelfTaughtCourseDTO selfTaughtCourseDTO) throws AccessRestrictedToStudentsException, LanguageNotFoundException {
         logger.info("REQUEST - /create_self_taught_course with DTO {}", selfTaughtCourseDTO);
         studentCourseLessonManagementService.createSelfTaughtCourse(selfTaughtCourseDTO);
@@ -39,7 +40,6 @@ public class StudentCourseManagementController {
 
     @PostMapping(value = "/add_new_self_taught_lesson", consumes =
             MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('STUDENT')")
     public void addNewSelfTaughtLesson(@RequestParam("file") MultipartFile file, @RequestParam(
             "title") String title, @RequestParam Long courseId) throws FileStorageException, AccessRestrictedToStudentsException, CourseNotFoundException, InvalidCourseAccessException {
         logger.info("REQUEST - /add_new_self_taught_lesson for course {} and title {}", courseId,
@@ -49,16 +49,21 @@ public class StudentCourseManagementController {
     }
 
     @GetMapping("/get_all_enrolled_courses")
-    @PreAuthorize("hasAuthority('STUDENT')")
     public List<EnrolledCourseDTO> getAllEnrolledCourses() throws AccessRestrictedToStudentsException {
         logger.info("REQUEST - /get_all_enrolled_courses");
         return studentCourseLessonManagementService.getAllEnrolledCourses();
     }
 
     @GetMapping("/get_enrolled_course_data")
-    @PreAuthorize("hasAuthority('STUDENT')")
     public ExtendedEnrolledCourseDTO getEnrolledCourseData(Long courseId) throws AccessRestrictedToStudentsException, InvalidCourseAccessException, CourseNotFoundException {
-        logger.info("REQUEST - /get_enrolled_course_data");
+        logger.info("REQUEST - /get_enrolled_course_data for course {}", courseId);
         return studentCourseLessonManagementService.getEnrolledCourseData(courseId);
+    }
+
+    @PostMapping("/join_supervised_course")
+    public void joinSupervisedCourse(@RequestBody Integer joiningCode) throws AccessRestrictedToStudentsException,
+            CourseNotFoundException, DuplicateEnrollmentException {
+        logger.info("REQUEST - /join_supervised_course for course with code {}", joiningCode);
+        studentCourseLessonManagementService.joinSupervisedCourse(joiningCode);
     }
 }

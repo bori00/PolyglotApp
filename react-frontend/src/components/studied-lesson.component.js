@@ -8,11 +8,13 @@ import Select from 'react-select'
 import {ListGroup, ListGroupItem} from "reactstrap";
 import {Link} from "react-router-dom";
 import LessonManagementService from "../services/lesson-management.service"
+import LessonPracticeService from "../services/lesson-practice.service"
+import AuthService from "../services/auth.service";
 
 const API_URL = "http://localhost:8081/polyglot/";
 
 
-export default class Lesson extends Component {
+export default class StudiedLesson extends Component {
     // send though props: lesson_id
     constructor(props) {
         super(props);
@@ -21,6 +23,10 @@ export default class Lesson extends Component {
         this.state = {
             loading: true,
             lesson_file_url: undefined,
+            lesson_title: undefined,
+            course_title: undefined,
+            course_id: undefined,
+            index_inside_course: undefined,
             word: undefined,
             message: "",
             successful: false
@@ -28,15 +34,27 @@ export default class Lesson extends Component {
     }
 
     componentDidMount() {
+        AuthService.guaranteeUserHasRole("STUDENT", this);
+
         LessonManagementService.getLessonsContent(this.props.match.params.lesson_id)
             .then(response => {
                 this.setState({
                     lesson_file_url: URL.createObjectURL(response)
                 })
+            }).then(() => {
+                LessonManagementService.getLessonsData(this.props.match.params.lesson_id)
+                    .then(response => {
+                        response.json().then(response => {
+                            this.setState({
+                                lesson_title: response.title,
+                                course_title: response.courseTitle,
+                                course_id: response.courseId,
+                                index_inside_course: response.indexInsideCourse,
+                                loading: false
+                            })
+                        })
+                    })
             })
-        this.setState({
-            loading: false
-        })
     }
 
     onChangeWord(e) {
@@ -58,19 +76,28 @@ export default class Lesson extends Component {
                             successful: true
                         })
                     } else {
-                        this.setState({
-                            message: "Could not save " + this.state.word,
-                            successful: false
+                        response.json().then(response => response.messages.join("\n")).then(errorMsg => {
+                            this.setState({
+                                successful: false,
+                                message: errorMsg
+                            });
                         })
                     }
                 })
         }
     }
 
+    downloadVocabulary(e) {
+        e.preventDefault();
+        LessonPracticeService.getLessonVocabularyPDF(this.props.match.params.lesson_id, this.state.lesson_title);
+    }
+
 
     render() {
 
         const practice_lesson_link = "/word_question/" + this.props.match.params.lesson_id;
+
+        const course_link = "/course/" + this.state.course_id;
 
         return (
             <Fragment>
@@ -88,7 +115,16 @@ export default class Lesson extends Component {
                     )}
                     {!this.state.loading && (
                         <Fragment>
-                            <h1>Lesson</h1>
+                            <h1>{this.state.lesson_title}</h1>
+                            <h5>Lesson nr. {this.state.index_inside_course} of course <i>"{this.state.course_title}"</i></h5>
+
+                            <div className="text-center">
+                                <Link to={course_link}>
+                                    <button type="button" className="btn btn btn-outline-secondary">
+                                        Back to the Course
+                                    </button>
+                                </Link>
+                            </div>
 
                             <div className="text-center">
                                 <Link to={practice_lesson_link}>
@@ -97,6 +133,11 @@ export default class Lesson extends Component {
                                     </button>
                                 </Link>
                             </div>
+
+                            <button onClick={e => this.downloadVocabulary(e)}
+                                    className="btn btn-secondary btn-block">
+                                Download Vocabulary in PDF
+                            </button>
 
                             <hr></hr>
 

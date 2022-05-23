@@ -152,7 +152,7 @@ public class LessonPracticeService {
             throw new WordToLearnNotFoundException();
         }
 
-        if (!rightVerifier.hasRightToModifyTheDataOf(student, optWordToLearn.get().getLesson())) {
+        if (!rightVerifier.hasAccessToTheDataOf(student, optWordToLearn.get().getLesson())) {
             logger.warn("INVALID ACCESS = attempt to answer question of lesson {} by student {}, " +
                             "who is not enrolled in the lesson's course",
                     optWordToLearn.get().getLesson().getId(), student);

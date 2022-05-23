@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Lesson {
+public abstract class Lesson implements Comparable<Lesson> {
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
@@ -31,4 +31,9 @@ public abstract class Lesson {
     }
 
     public abstract Course getCourse();
+
+    @Override
+    public int compareTo(Lesson o) {
+        return this.indexInsideCourse.compareTo(o.getIndexInsideCourse());
+    }
 }
